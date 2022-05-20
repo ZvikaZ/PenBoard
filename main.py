@@ -7,12 +7,9 @@
 import pyglet
 import sys
 
-window = pyglet.window.Window(1024, 768, caption="PenBoard", resizable=True)
+window = pyglet.window.Window(1200, 900, caption="PenBoard", resizable=True)
 batch = pyglet.graphics.Batch()
 pyglet.gl.glClearColor(0.9, 0.9, 0.9, 1.0)
-
-cursor = window.get_system_mouse_cursor(window.CURSOR_CROSSHAIR)
-window.set_mouse_cursor(cursor)
 
 tablets = pyglet.input.get_tablets()
 canvases = []
@@ -41,9 +38,19 @@ else:
     sys.exit(1)
 
 
+def change_mouse_cursor(type):
+    # if type in [window.CURSOR_CROSSHAIR,]:
+    #     image = pyglet.image.load('pencil.png')
+    #     cursor = pyglet.window.ImageMouseCursor(image, 16, 8)
+    #     window.set_mouse_cursor(cursor)
+    # else:
+    window.set_mouse_cursor(window.get_system_mouse_cursor(type))
+
+
 @canvas.event
 def on_motion(cursor, x, y, pressure, tilt_x, tilt_y):
-    if pressure:
+    if pressure and cursor.name == 'Pressure Stylus':
+        change_mouse_cursor(window.CURSOR_CROSSHAIR)
         if on_motion.prev_point is not None:
             x2, y2 = on_motion.prev_point
             width = 6 * (pressure / 2 + 0.5)
@@ -51,7 +58,10 @@ def on_motion(cursor, x, y, pressure, tilt_x, tilt_y):
             lines.append(line)
         on_motion.prev_point = (x, y)
     else:
+        change_mouse_cursor(window.CURSOR_DEFAULT)
         on_motion.prev_point = None
+    if cursor.name == "Eraser":
+        change_mouse_cursor(window.CURSOR_NO)
 
 
 on_motion.prev_point = None
