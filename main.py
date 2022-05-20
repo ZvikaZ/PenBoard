@@ -1,3 +1,9 @@
+# TODO: eraser
+# TODO: colors
+# TODO: scrolling
+# TODO: grid
+# TODO: undo
+
 import pyglet
 import sys
 
@@ -8,11 +14,10 @@ pyglet.gl.glClearColor(0.9, 0.9, 0.9, 1.0)
 cursor = window.get_system_mouse_cursor(window.CURSOR_CROSSHAIR)
 window.set_mouse_cursor(cursor)
 
-
 tablets = pyglet.input.get_tablets()
 canvases = []
 
-points = []
+lines = []
 
 if tablets:
     print('Tablets:')
@@ -39,9 +44,17 @@ else:
 @canvas.event
 def on_motion(cursor, x, y, pressure, tilt_x, tilt_y):
     if pressure:
-        print('%s: on_motion(%r, %r, %r, %r, %r, %r)' % (name, cursor, x, y, pressure, tilt_x, tilt_y))
-        point = pyglet.shapes.Circle(x=x, y=y, radius=6 * (pressure / 4 + 0.5), color=(0, 0, 0), batch=batch)
-        points.append(point)
+        if on_motion.prev_point is not None:
+            x2, y2 = on_motion.prev_point
+            width = 6 * (pressure / 2 + 0.5)
+            line = pyglet.shapes.Line(x, y, x2, y2, width=width, color=(0, 0, 0), batch=batch)
+            lines.append(line)
+        on_motion.prev_point = (x, y)
+    else:
+        on_motion.prev_point = None
+
+
+on_motion.prev_point = None
 
 
 @window.event
