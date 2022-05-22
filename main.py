@@ -7,7 +7,7 @@
 # TODO: save
 # TODO: create PDF
 
-# TODO: mouse - color choser
+# TODO: mouse - color chooser
 # TODO: change brush size
 # TODO: readme
 
@@ -16,7 +16,7 @@ import pyglet
 import tablet
 from board import Board
 from mouse_cursor import change_mouse_cursor
-from color_choser import ColorChoser
+from color_chooser import ColorChooser
 import operations
 
 window = pyglet.window.Window(1200, 900, caption="PenBoard", fullscreen=False, resizable=False)
@@ -72,7 +72,7 @@ def on_mouse_press(x, y, button, modifiers):
         width = operations.erase(board, pen.get('pressure', 0.5), x, y)
         change_mouse_cursor(window.CURSOR_NO, window, width)
     elif combined_buttons(button) == 'select':
-        ColorChoser(board, x, y)
+        ColorChooser(board, x, y)
 
 
 @window.event

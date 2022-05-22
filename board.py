@@ -24,7 +24,7 @@ class Board:
         self.create_grid(GRID_WIDTH)
         self.paint_colors = PAINT_COLORS
         self.active_color = self.paint_colors[0]
-        self.color_choser = None
+        self.color_chooser = None
 
     def create_grid(self, size):
         self.grid = []

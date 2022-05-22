@@ -2,7 +2,7 @@ import math
 import pyglet
 
 
-class ColorChoser():
+class ColorChooser():
     def __init__(self, board, x, y):
         start_angle = 0
         angle = math.tau / len(board.paint_colors)
@@ -16,4 +16,4 @@ class ColorChoser():
                                                      batch=board.batch))
 
             start_angle += angle
-        board.color_choser = self
+        board.color_chooser = self
