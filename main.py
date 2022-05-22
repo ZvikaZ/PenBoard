@@ -43,6 +43,11 @@ if canvas is not None:
                 change_mouse_cursor(window.CURSOR_DEFAULT, window)
 
 
+@window.event
+def on_key_press(symbol, modifiers):
+    ColorChooser(board)
+
+
 def combined_buttons(button):
     if pen == {} or pen['buttons'] == 0:
         if button == pyglet.window.mouse.LEFT:
@@ -65,9 +70,12 @@ def combined_buttons(button):
 @window.event
 def on_mouse_press(x, y, button, modifiers):
     if combined_buttons(button) == 'click':
-        change_mouse_cursor(window.CURSOR_CROSSHAIR, window)
-        operations.paint(board, pen.get('pressure', 0.4), x, y, (x, y))
-        on_mouse_drag.prev_point = (x, y)
+        if board.color_chooser is not None:
+            board.color_chooser.handle_click(x ,y)
+        else:
+            change_mouse_cursor(window.CURSOR_CROSSHAIR, window)
+            operations.paint(board, pen.get('pressure', 0.4), x, y, (x, y))
+            on_mouse_drag.prev_point = (x, y)
     elif combined_buttons(button) == 'erase':
         width = operations.erase(board, pen.get('pressure', 0.5), x, y)
         change_mouse_cursor(window.CURSOR_NO, window, width)

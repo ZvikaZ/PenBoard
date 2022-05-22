@@ -61,3 +61,6 @@ class Board:
         for line in self.lines:
             if self.short_distance((x, y), line, threshold):
                 self.lines.remove(line)
+
+    def update_pen_color(self, color):
+        self.active_color = color
