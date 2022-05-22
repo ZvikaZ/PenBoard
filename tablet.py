@@ -13,8 +13,8 @@ def open_tablet(window):
         except pyglet.input.DeviceException:
             print('Failed to open tablet %d on window' % num)
 
-        print('Opened %s. Ignoring mouse.' % name)
+        print('Opened %s.' % name)
         return canvas
 
     else:
-        print('No tablets found. Using mouse.')
+        print('No tablets found.')

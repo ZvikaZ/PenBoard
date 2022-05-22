@@ -8,7 +8,6 @@
 # TODO: create PDF
 
 # TODO: mouse - color choser
-# TODO: allow mouse with tablet
 # TODO: change brush size
 # TODO: readme
 
@@ -24,64 +23,77 @@ window = pyglet.window.Window(1200, 900, caption="PenBoard", fullscreen=False, r
 
 board = Board(window)
 canvas = tablet.open_tablet(window)
+pen = {}
 
 if canvas is not None:
     @canvas.event
     def on_motion(cursor, x, y, pressure, tilt_x, tilt_y, buttons):
-        if pressure and cursor.name == 'Pressure Stylus':
-            change_mouse_cursor(window.CURSOR_CROSSHAIR, window)
-            if on_motion.prev_point is not None:
-                operations.paint(board, pressure, x, y, on_motion.prev_point)
-            on_motion.prev_point = (x, y)
-        else:
-            change_mouse_cursor(window.CURSOR_DEFAULT, window)
-            on_motion.prev_point = None
-        if cursor.name == "Eraser":
-            if pressure:
-                width = operations.erase(board, pressure, x, y)
-                change_mouse_cursor(window.CURSOR_NO, window, width)
-            else:
+        global pen
+        pen = {
+            'cursor_name': cursor.name,
+            'x': x,
+            'y': y,
+            'pressure': pressure,
+            'buttons': buttons
+        }
+        if pressure == 0:
+            if cursor.name == "Eraser":
                 change_mouse_cursor(window.CURSOR_NO, window, 8)
-        if buttons == 4:
-            ColorChoser(board, x, y)
+            else:
+                change_mouse_cursor(window.CURSOR_DEFAULT, window)
 
 
-    on_motion.prev_point = None
-
-else:
-    # currently we take mouse events only if tablet isn't working
-    # otherwise, when table is working, we get double events
-
-    @window.event
-    def on_mouse_press(x, y, button, modifiers):
+def combined_buttons(button):
+    if pen == {} or pen['buttons'] == 0:
         if button == pyglet.window.mouse.LEFT:
-            change_mouse_cursor(window.CURSOR_CROSSHAIR, window)
-            operations.paint(board, 0.4, x, y, (x, y))
-            on_mouse_drag.prev_point = (x, y)
+            return 'click'
         elif button == pyglet.window.mouse.RIGHT:
-            width = operations.erase(board, 0.5, x, y)
-            change_mouse_cursor(window.CURSOR_NO, window, width)
+            return 'erase'
+        else:
+            return ''
+    else:
+        if pen['buttons'] == 1:
+            return 'click'
+        elif (pen['buttons'] & 2) == 2 or pen['cursor_name'] == 'Eraser':
+            return 'erase'
+        elif (pen['buttons'] & 4) == 4:
+            return 'select'
+        else:
+            return ''
 
 
-    @window.event
-    def on_mouse_release(x, y, button, modifiers):
-        change_mouse_cursor(window.CURSOR_DEFAULT, window)
-        on_mouse_drag.prev_point = None
+@window.event
+def on_mouse_press(x, y, button, modifiers):
+    if combined_buttons(button) == 'click':
+        change_mouse_cursor(window.CURSOR_CROSSHAIR, window)
+        operations.paint(board, pen.get('pressure', 0.4), x, y, (x, y))
+        on_mouse_drag.prev_point = (x, y)
+    elif combined_buttons(button) == 'erase':
+        width = operations.erase(board, pen.get('pressure', 0.5), x, y)
+        change_mouse_cursor(window.CURSOR_NO, window, width)
+    elif combined_buttons(button) == 'select':
+        ColorChoser(board, x, y)
 
 
-    @window.event
-    def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
-        if buttons == pyglet.window.mouse.LEFT:
-            change_mouse_cursor(window.CURSOR_CROSSHAIR, window)
-            if on_mouse_drag.prev_point is not None:
-                operations.paint(board, 0.6, x, y, on_mouse_drag.prev_point)
-            on_mouse_drag.prev_point = (x, y)
-        if buttons == pyglet.window.mouse.RIGHT:
-            width = operations.erase(board, 0.5, x, y)
-            change_mouse_cursor(window.CURSOR_NO, window, width)
-
-
+@window.event
+def on_mouse_release(x, y, button, modifiers):
+    change_mouse_cursor(window.CURSOR_DEFAULT, window)
     on_mouse_drag.prev_point = None
+
+
+@window.event
+def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
+    if combined_buttons(buttons) == 'click':
+        change_mouse_cursor(window.CURSOR_CROSSHAIR, window)
+        if on_mouse_drag.prev_point is not None:
+            operations.paint(board, pen.get('pressure', 0.6), x, y, on_mouse_drag.prev_point)
+        on_mouse_drag.prev_point = (x, y)
+    elif combined_buttons(buttons) == 'erase':
+        width = operations.erase(board, pen.get('pressure', 0.5), x, y)
+        change_mouse_cursor(window.CURSOR_NO, window, width)
+
+
+on_mouse_drag.prev_point = None
 
 
 @window.event
