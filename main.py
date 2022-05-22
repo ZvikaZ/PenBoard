@@ -1,5 +1,4 @@
 # TODO: eraser O(1)
-# TODO: colors
 # TODO: scrolling/pages
 # TODO: resizing
 
@@ -7,7 +6,8 @@
 # TODO: save
 # TODO: create PDF
 
-# TODO: mouse - color chooser
+# TODO: better colors to choose from
+# TODO: keyboard shortcuts (explain how to choose color)
 # TODO: change brush size
 # TODO: readme
 
@@ -25,6 +25,8 @@ board = Board(window)
 canvas = tablet.open_tablet(window)
 pen = {}
 
+change_mouse_cursor('default', window, board)
+
 if canvas is not None:
     @canvas.event
     def on_motion(cursor, x, y, pressure, tilt_x, tilt_y, buttons):
@@ -38,9 +40,9 @@ if canvas is not None:
         }
         if pressure == 0:
             if cursor.name == "Eraser":
-                change_mouse_cursor(window.CURSOR_NO, window, 8)
+                change_mouse_cursor('eraser', window, board, width=8)
             else:
-                change_mouse_cursor(window.CURSOR_DEFAULT, window)
+                change_mouse_cursor('default', window, board)
 
 
 @window.event
@@ -71,34 +73,34 @@ def combined_buttons(button):
 def on_mouse_press(x, y, button, modifiers):
     if combined_buttons(button) == 'click':
         if board.color_chooser is not None:
-            board.color_chooser.handle_click(x ,y)
+            board.color_chooser.handle_click(x, y)
         else:
-            change_mouse_cursor(window.CURSOR_CROSSHAIR, window)
+            change_mouse_cursor('pen', window, board)
             operations.paint(board, pen.get('pressure', 0.4), x, y, (x, y))
             on_mouse_drag.prev_point = (x, y)
     elif combined_buttons(button) == 'erase':
         width = operations.erase(board, pen.get('pressure', 0.5), x, y)
-        change_mouse_cursor(window.CURSOR_NO, window, width)
+        change_mouse_cursor('eraser', window, board, width=width)
     elif combined_buttons(button) == 'select':
         ColorChooser(board, x, y)
 
 
 @window.event
 def on_mouse_release(x, y, button, modifiers):
-    change_mouse_cursor(window.CURSOR_DEFAULT, window)
+    change_mouse_cursor('default', window, board)
     on_mouse_drag.prev_point = None
 
 
 @window.event
 def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
     if combined_buttons(buttons) == 'click':
-        change_mouse_cursor(window.CURSOR_CROSSHAIR, window)
+        change_mouse_cursor('pen', window, board)
         if on_mouse_drag.prev_point is not None:
             operations.paint(board, pen.get('pressure', 0.6), x, y, on_mouse_drag.prev_point)
         on_mouse_drag.prev_point = (x, y)
     elif combined_buttons(buttons) == 'erase':
         width = operations.erase(board, pen.get('pressure', 0.5), x, y)
-        change_mouse_cursor(window.CURSOR_NO, window, width)
+        change_mouse_cursor('eraser', window, board, width=width)
 
 
 on_mouse_drag.prev_point = None
