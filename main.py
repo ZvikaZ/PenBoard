@@ -1,11 +1,17 @@
-# TODO: eraser
 # TODO: colors
-# TODO: scrolling
+# TODO: scrolling/pages
 # TODO: grid
+
 # TODO: undo
+# TODO: mouse
+# TODO: save
+# TODO: create PDF
+# TODO: readme
 
 import pyglet
 import sys
+from board import Board
+from mouse_cursor import EraserMouseCursor
 
 window = pyglet.window.Window(1200, 900, caption="PenBoard", resizable=True)
 batch = pyglet.graphics.Batch()
@@ -14,13 +20,9 @@ pyglet.gl.glClearColor(0.9, 0.9, 0.9, 1.0)
 tablets = pyglet.input.get_tablets()
 canvases = []
 
-lines = []
+board = Board()
 
 if tablets:
-    print('Tablets:')
-    for i, tablet in enumerate(tablets):
-        print('  (%d) %s' % (i + 1, tablet.name))
-
     num = 0
     name = tablets[num].name
 
@@ -38,13 +40,15 @@ else:
     sys.exit(1)
 
 
-def change_mouse_cursor(type):
+def change_mouse_cursor(type, width=None):
     # if type in [window.CURSOR_CROSSHAIR,]:
     #     image = pyglet.image.load('pencil.png')
     #     cursor = pyglet.window.ImageMouseCursor(image, 16, 8)
-    #     window.set_mouse_cursor(cursor)
-    # else:
-    window.set_mouse_cursor(window.get_system_mouse_cursor(type))
+    if type == window.CURSOR_NO:
+        cursor = EraserMouseCursor(width)
+    else:
+        cursor = window.get_system_mouse_cursor(type)
+    window.set_mouse_cursor(cursor)
 
 
 @canvas.event
@@ -55,13 +59,18 @@ def on_motion(cursor, x, y, pressure, tilt_x, tilt_y):
             x2, y2 = on_motion.prev_point
             width = 6 * (pressure / 2 + 0.5)
             line = pyglet.shapes.Line(x, y, x2, y2, width=width, color=(0, 0, 0), batch=batch)
-            lines.append(line)
+            board.add(line)
         on_motion.prev_point = (x, y)
     else:
         change_mouse_cursor(window.CURSOR_DEFAULT)
         on_motion.prev_point = None
     if cursor.name == "Eraser":
-        change_mouse_cursor(window.CURSOR_NO)
+        if pressure:
+            width = pressure * 30
+            change_mouse_cursor(window.CURSOR_NO, width)
+            board.remove(x, y, width)
+        else:
+            change_mouse_cursor(window.CURSOR_NO, 10)
 
 
 on_motion.prev_point = None
