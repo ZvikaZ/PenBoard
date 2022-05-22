@@ -11,6 +11,7 @@
 # TODO: readme
 
 import pyglet
+from pyglet.window import key
 
 import tablet
 from board import Board
@@ -46,7 +47,12 @@ if canvas is not None:
 
 @window.event
 def on_key_press(symbol, modifiers):
-    ColorChooser(board, window.width / 2, window.height / 2)
+    if symbol == key.DOWN:
+        board.down()
+    elif symbol == key.UP:
+        board.up()
+    else:
+        ColorChooser(board, window.width / 2, window.height / 2)
 
 
 def combined_buttons(button):

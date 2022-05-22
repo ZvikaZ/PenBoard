@@ -25,6 +25,35 @@ class Board:
         self.paint_colors = PAINT_COLORS
         self.active_color = self.paint_colors[0]
         self.color_chooser = None
+        self.current_page = 0
+        self.pages = []
+
+    def clean_page(self):
+        self.lines = {}
+        self.batch = pyglet.graphics.Batch()
+        self.create_grid(GRID_WIDTH)
+
+    def down(self):
+        self.jump_page(self.current_page + 1)
+
+    def up(self):
+        if self.current_page > 0:
+            self.jump_page(self.current_page - 1)
+
+    def jump_page(self, new_page):
+        try:
+            self.pages[self.current_page] = {'lines': self.lines, 'batch': self.batch}
+        except IndexError:
+            self.pages.append({'lines': self.lines, 'batch': self.batch})
+
+        try:
+            self.lines = self.pages[new_page]['lines']
+            self.batch = self.pages[new_page]['batch']
+            self.create_grid(GRID_WIDTH)
+        except IndexError:
+            self.clean_page()
+
+        self.current_page = new_page
 
     def create_grid(self, size):
         self.grid = []
