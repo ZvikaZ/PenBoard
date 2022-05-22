@@ -4,6 +4,14 @@ import pyglet
 BACKGROUND_COLOR = (1.0, 1.0, 1.0, 1.0)
 GRID_COLOR = (200, 200, 200)
 GRID_WIDTH = 60
+PAINT_COLORS = [(0, 0, 0),
+                (255, 0, 0),
+                (0, 255, 0),
+                (0, 0, 255),
+                (255, 255, 0),
+                (255, 0, 255),
+                (0, 255, 255),
+                ]
 
 
 class Board:
@@ -14,6 +22,9 @@ class Board:
         self.batch = pyglet.graphics.Batch()
         pyglet.gl.glClearColor(*BACKGROUND_COLOR)
         self.create_grid(GRID_WIDTH)
+        self.paint_colors = PAINT_COLORS
+        self.active_color = self.paint_colors[0]
+        self.color_choser = None
 
     def create_grid(self, size):
         self.grid = []
@@ -33,9 +44,9 @@ class Board:
 
     def add(self, p1, p2, width):
         if p1 == p2:
-            line = pyglet.shapes.Circle(p1[0], p1[1], radius=width / 2, color=(0, 0, 0), batch=self.batch)
+            line = pyglet.shapes.Circle(p1[0], p1[1], radius=width / 2, color=self.active_color, batch=self.batch)
         else:
-            line = pyglet.shapes.Line(p1[0], p1[1], p2[0], p2[1], width=width, color=(0, 0, 0), batch=self.batch)
+            line = pyglet.shapes.Line(p1[0], p1[1], p2[0], p2[1], width=width, color=self.active_color, batch=self.batch)
         self.lines.append(line)
 
     def short_distance(self, obj1, obj2, threshold):
