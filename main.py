@@ -1,13 +1,13 @@
-# TODO: eraser O(1)
 # TODO: scrolling/pages
 
-# TODO: undo
 # TODO: save
 # TODO: create PDF
+# TODO: undo
 
 # TODO: better colors to choose from
 # TODO: keyboard shortcuts (explain how to choose color)
 # TODO: change brush size
+# TODO: clean page
 # TODO: readme
 
 import pyglet

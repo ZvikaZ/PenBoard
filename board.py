@@ -13,11 +13,12 @@ PAINT_COLORS = [(0, 0, 0),
                 (255, 0, 255),
                 (0, 255, 255),
                 ]
+LINES_HASH_DIVIDER = 50
 
 
 class Board:
     def __init__(self):
-        self.lines = []
+        self.lines = {}
         self.batch = pyglet.graphics.Batch()
         pyglet.gl.glClearColor(*BACKGROUND_COLOR)
         self.create_grid(GRID_WIDTH)
@@ -45,8 +46,16 @@ class Board:
         if p1 == p2:
             line = pyglet.shapes.Circle(p1[0], p1[1], radius=width / 2, color=self.active_color, batch=self.batch)
         else:
-            line = pyglet.shapes.Line(p1[0], p1[1], p2[0], p2[1], width=width, color=self.active_color, batch=self.batch)
-        self.lines.append(line)
+            line = pyglet.shapes.Line(p1[0], p1[1], p2[0], p2[1], width=width, color=self.active_color,
+                                      batch=self.batch)
+        self.store(line)
+
+    def store(self, line):
+        """allows us to delete lines in O(1)"""
+        key = (line.x // LINES_HASH_DIVIDER, line.y // LINES_HASH_DIVIDER)
+        l = self.lines.get(key, [])
+        l.append(line)
+        self.lines[key] = l
 
     def short_distance(self, obj1, obj2, threshold):
         try:
@@ -56,10 +65,15 @@ class Board:
             return math.dist(obj1, [obj2.x, obj2.y]) < threshold
 
     def remove(self, x, y, threshold):
-        # this is O(n), can be easily changed to O(1) if it will show problems...
-        for line in self.lines:
-            if self.short_distance((x, y), line, threshold):
-                self.lines.remove(line)
+        key_x, key_y = x // LINES_HASH_DIVIDER, y // LINES_HASH_DIVIDER
+        for i in [-1, 0, 1]:
+            for j in [-1, 0, 1]:
+                key = (key_x + i, key_y + j)
+                l = self.lines.get(key, [])
+                for line in l:
+                    if self.short_distance((x, y), line, threshold):
+                        l.remove(line)
+                self.lines[key] = l
 
     def update_pen_color(self, color):
         self.active_color = color
