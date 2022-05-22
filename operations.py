@@ -4,6 +4,6 @@ def paint(board, pressure, x, y, prev_point):
 
 
 def erase(board, pressure, x, y):
-    width = pressure * 30
+    width = pressure * 50
     board.remove(x, y, width)
     return width
