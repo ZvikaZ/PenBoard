@@ -1,6 +1,6 @@
 # TODO: colors
 # TODO: scrolling/pages
-# TODO: grid
+# TODO: resizing
 
 # TODO: undo
 # TODO: mouse
@@ -13,14 +13,12 @@ import sys
 from board import Board
 from mouse_cursor import EraserMouseCursor
 
-window = pyglet.window.Window(1200, 900, caption="PenBoard", resizable=True)
-batch = pyglet.graphics.Batch()
-pyglet.gl.glClearColor(0.9, 0.9, 0.9, 1.0)
+window = pyglet.window.Window(1200, 900, caption="PenBoard", fullscreen=False, resizable=False)
 
 tablets = pyglet.input.get_tablets()
 canvases = []
 
-board = Board()
+board = Board(window)
 
 if tablets:
     num = 0
@@ -56,10 +54,8 @@ def on_motion(cursor, x, y, pressure, tilt_x, tilt_y):
     if pressure and cursor.name == 'Pressure Stylus':
         change_mouse_cursor(window.CURSOR_CROSSHAIR)
         if on_motion.prev_point is not None:
-            x2, y2 = on_motion.prev_point
             width = 6 * (pressure / 2 + 0.5)
-            line = pyglet.shapes.Line(x, y, x2, y2, width=width, color=(0, 0, 0), batch=batch)
-            board.add(line)
+            board.add((x, y), on_motion.prev_point, width)
         on_motion.prev_point = (x, y)
     else:
         change_mouse_cursor(window.CURSOR_DEFAULT)
@@ -79,7 +75,7 @@ on_motion.prev_point = None
 @window.event
 def on_draw():
     window.clear()
-    batch.draw()
+    board.draw()
 
 
 def update(dt):
