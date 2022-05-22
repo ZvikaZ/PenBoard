@@ -11,12 +11,8 @@ def contains(sector, x, y):
 
 
 class ColorChooser():
-    def __init__(self, board, x=None, y=None):
+    def __init__(self, board, x, y):
         self.board = board
-        if x is None:
-            x = board.width / 2
-        if y is None:
-            y = board.height / 2
         start_angle = 0
         angle = math.tau / len(board.paint_colors)
         self.sectors = []

@@ -1,5 +1,6 @@
 import math
 import pyglet
+from misc import get_max_screens_width, get_max_screens_height
 
 BACKGROUND_COLOR = (1.0, 1.0, 1.0, 1.0)
 GRID_COLOR = (200, 200, 200)
@@ -15,10 +16,8 @@ PAINT_COLORS = [(0, 0, 0),
 
 
 class Board:
-    def __init__(self, window):
+    def __init__(self):
         self.lines = []
-        self.width = window.width
-        self.height = window.height
         self.batch = pyglet.graphics.Batch()
         pyglet.gl.glClearColor(*BACKGROUND_COLOR)
         self.create_grid(GRID_WIDTH)
@@ -28,15 +27,15 @@ class Board:
 
     def create_grid(self, size):
         self.grid = []
-        i = self.height
+        i = get_max_screens_height()
         while i > 0:
-            line = pyglet.shapes.Line(0, i, self.width, i, width=1, color=GRID_COLOR, batch=self.batch)
+            line = pyglet.shapes.Line(0, i, get_max_screens_width(), i, width=1, color=GRID_COLOR, batch=self.batch)
             self.grid.append(line)
             i -= size
         i = 0
-        while i < self.width:
+        while i < get_max_screens_width():
             i += size
-            line = pyglet.shapes.Line(i, 0, i, self.height, width=1, color=GRID_COLOR, batch=self.batch)
+            line = pyglet.shapes.Line(i, 0, i, get_max_screens_height(), width=1, color=GRID_COLOR, batch=self.batch)
             self.grid.append(line)
 
     def draw(self):

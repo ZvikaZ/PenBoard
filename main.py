@@ -1,6 +1,5 @@
 # TODO: eraser O(1)
 # TODO: scrolling/pages
-# TODO: resizing
 
 # TODO: undo
 # TODO: save
@@ -19,9 +18,9 @@ from mouse_cursor import change_mouse_cursor
 from color_chooser import ColorChooser
 import operations
 
-window = pyglet.window.Window(1200, 900, caption="PenBoard", fullscreen=False, resizable=False)
+window = pyglet.window.Window(1200, 900, caption="PenBoard", resizable=True)
 
-board = Board(window)
+board = Board()
 canvas = tablet.open_tablet(window)
 pen = {}
 
@@ -47,7 +46,7 @@ if canvas is not None:
 
 @window.event
 def on_key_press(symbol, modifiers):
-    ColorChooser(board)
+    ColorChooser(board, window.width / 2, window.height / 2)
 
 
 def combined_buttons(button):
