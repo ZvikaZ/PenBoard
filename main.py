@@ -1,5 +1,4 @@
 # TODO: icons bar (next, prev, save, load, pdf, clean, undo, quit)
-# TODO: clean page not really working
 # TODO: better colors to choose from
 # TODO: keyboard shortcuts (explain how to choose color)
 # TODO: change brush size
@@ -51,7 +50,7 @@ def on_key_press(symbol, modifiers):
     elif symbol == key.UP:
         board.up()
     elif symbol == key.C:
-        board.clean_page()
+        board.erase_page()
     elif symbol == key.S:
         board.save()
     elif symbol == key.L:

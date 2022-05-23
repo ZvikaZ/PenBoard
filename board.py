@@ -175,3 +175,7 @@ class Board:
             section = self.get_current_shapes()[key]
             shapes[key] = [dict_to_shape(shape_to_dict(shape), batch) for shape in section]
         return shapes
+
+    def erase_page(self):
+        self.pages[self.current_page] = {}
+        self.clean_page()
