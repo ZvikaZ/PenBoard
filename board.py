@@ -1,5 +1,8 @@
 import math
+import pickle  
+import dill    #TODO remove?
 import pyglet
+
 from misc import get_max_screens_width, get_max_screens_height
 import file_dialog
 
@@ -20,7 +23,6 @@ LINES_HASH_DIVIDER = 50
 
 class Board:
     def __init__(self):
-        self.lines = {}
         self.batch = pyglet.graphics.Batch()
         pyglet.gl.glClearColor(*BACKGROUND_COLOR)
         self.paint_colors = PAINT_COLORS
@@ -28,10 +30,13 @@ class Board:
         self.color_chooser = None
         self.current_page = 0
         self.pages = []
+        self.pages.append({'lines': {}, 'batch': self.batch})
         self.create_grid(GRID_WIDTH)
 
+    def get_current_lines(self):
+        return self.pages[self.current_page]['lines']
+
     def clean_page(self):
-        self.lines = {}
         self.batch = pyglet.graphics.Batch()
         self.create_grid(GRID_WIDTH)
 
@@ -43,20 +48,19 @@ class Board:
             self.jump_page(self.current_page - 1)
 
     def jump_page(self, new_page):
-        try:
-            self.pages[self.current_page] = {'lines': self.lines, 'batch': self.batch}
-        except IndexError:
-            self.pages.append({'lines': self.lines, 'batch': self.batch})
-
         self.current_page = new_page
+        while True:
+            try:
+                self.pages[self.current_page]
+                break
+            except IndexError:
+                self.pages.append({'lines': {}, 'batch': pyglet.graphics.Batch()})
 
         try:
-            self.lines = self.pages[self.current_page]['lines']
             self.batch = self.pages[self.current_page]['batch']
             self.create_grid(GRID_WIDTH)
         except IndexError:
             self.clean_page()
-
 
     def create_grid(self, size):
         self.grid = []
@@ -70,7 +74,7 @@ class Board:
             i += size
             line = pyglet.shapes.Line(i, 0, i, get_max_screens_height(), width=1, color=GRID_COLOR, batch=self.batch)
             self.grid.append(line)
-        self.grid.append(pyglet.text.Label(f'Page: {self.current_page + 1}',
+        self.grid.append(pyglet.text.Label(f'Page: {self.current_page + 1} of {len(self.pages)}',
                                            font_size=14,
                                            color=CURRENT_PAGE_COLOR,
                                            x=15,
@@ -91,9 +95,9 @@ class Board:
     def store(self, line):
         """allows us to delete lines in O(1)"""
         key = (line.x // LINES_HASH_DIVIDER, line.y // LINES_HASH_DIVIDER)
-        l = self.lines.get(key, [])
+        l = self.get_current_lines().get(key, [])
         l.append(line)
-        self.lines[key] = l
+        self.get_current_lines()[key] = l
 
     def short_distance(self, obj1, obj2, threshold):
         try:
@@ -107,22 +111,26 @@ class Board:
         for i in [-1, 0, 1]:
             for j in [-1, 0, 1]:
                 key = (key_x + i, key_y + j)
-                l = self.lines.get(key, [])
+                l = self.get_current_lines().get(key, [])
                 for line in l:
                     if self.short_distance((x, y), line, threshold):
                         l.remove(line)
-                self.lines[key] = l
+                self.get_current_lines()[key] = l
 
     def update_pen_color(self, color):
         self.active_color = color
 
     def save(self):
-        save_as = file_dialog.FileSaveDialog(initial_file="whiteboard", filetypes=[("PNB", ".pnb"), ("PenBoard", ".pnb")])
+        save_as = file_dialog.FileSaveDialog(initial_file="whiteboard",
+                                             filetypes=[("PNB", ".pnb"), ("PenBoard", ".pnb")])
         filename = save_as._open_dialog(save_as._dialog)
-        print('save', filename)
+        if filename:
+            with open(filename, 'wb') as f:
+                dill.dump(self.pages[self.current_page]['lines'], f)
 
     def load(self):
         load_dialog = file_dialog.FileOpenDialog(filetypes=[("PNB", ".pnb"), ("PenBoard", ".bnb")])
         filename = load_dialog._open_dialog(load_dialog._dialog)
-        print('load', filename)
-
+        with open(filename, 'rb') as f:
+            self.pages = pickle.load(f)
+            self.jump_page(0)

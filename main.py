@@ -1,12 +1,12 @@
 # TODO: save
 # TODO: create PDF
-# TODO: undo
 
+# TODO: icons bar (next, prev, save, load, pdf, clean, undo, quit)
 # TODO: better colors to choose from
-# TODO: icons bar (next, prev, save, load, pdf, clean, undo)
 # TODO: keyboard shortcuts (explain how to choose color)
-# TODO: write current page out of total pages
+# TODO: fix 'page % of %'
 # TODO: change brush size
+# TODO: undo
 # TODO: readme
 
 import pyglet
