@@ -1,5 +1,3 @@
-# TODO: create PDF
-
 # TODO: icons bar (next, prev, save, load, pdf, clean, undo, quit)
 # TODO: clean page not really working
 # TODO: better colors to choose from

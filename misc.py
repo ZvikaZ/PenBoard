@@ -1,4 +1,5 @@
 import pyglet
+from PIL import Image
 
 
 def get_max_screens_width():
@@ -47,3 +48,20 @@ def dict_to_shape(shape, batch):
         raise ValueError('Unhandled "dict_to_shape" type: ' + shape['kind'])
     obj.opacity = shape['opacity']
     return obj
+
+
+def pngs_to_pdf(input_pngs, output_pdf):
+    # the image is RGBA. pillow cannot save RGBA as pdf, only RGB. so let's remove the alpha
+    # from https://stackoverflow.com/questions/66311997/why-do-i-get-cannot-save-mode-rgba-error-when-using-pil
+    rgb_pngs = []
+    for input_png in input_pngs:
+        png = Image.open(input_png)
+        png.load()
+
+        rgb_png = Image.new("RGB", png.size, (255, 255, 255))
+        rgb_png.paste(png, mask=png.split()[3])  # 3 is the alpha channel
+        rgb_pngs.append(rgb_png)
+
+    # from https://stackoverflow.com/a/47283224/1543290
+    rgb_pngs[0].save(output_pdf, "PDF", resolution=100.0, save_all=True, append_images=rgb_pngs[1:])
+

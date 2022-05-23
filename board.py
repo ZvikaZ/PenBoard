@@ -1,8 +1,9 @@
 import math
 import pickle
 import pyglet
+import tempfile
 
-from misc import get_max_screens_width, get_max_screens_height, shape_to_dict, dict_to_shape
+from misc import *
 import file_dialog
 from mouse_cursor import change_mouse_cursor
 
@@ -120,7 +121,7 @@ class Board:
         self.active_color = color
 
     def save(self):
-        save_as = file_dialog.FileSaveDialog(initial_file="whiteboard",
+        save_as = file_dialog.FileSaveDialog(initial_file="PenBoard",
                                              filetypes=[("PNB", ".pnb"), ("PenBoard", ".pnb")])
         filename = save_as._open_dialog(save_as._dialog)
         if filename:
@@ -141,16 +142,30 @@ class Board:
             self.jump_page(0)
 
     def export_to_pdf(self, window):
-        change_mouse_cursor('wait', window, self)
-        batch = pyglet.graphics.Batch()
-        shapes = self.update_batch(batch)
+        save_as = file_dialog.FileSaveDialog(initial_file="PenBoard",
+                                             filetypes=[("PDF", ".pdf"), ("", ".pdf")])
+        filename = save_as._open_dialog(save_as._dialog)
+        if filename:
+            change_mouse_cursor('wait', window, self)
+            current_page = self.current_page
+            screenshot_pngs = []
 
-        window.clear()
-        batch.draw()
-        pyglet.image.get_buffer_manager().get_color_buffer().save('screenshot.png')
+            for page in range(len(self.pages)):
+                self.current_page = page
+                batch = pyglet.graphics.Batch()
+                shapes = self.update_batch(batch)
 
-        self.update_batch(self.batch)
-        change_mouse_cursor('default', window, self)
+                window.clear()
+                batch.draw()
+
+                screenshot_pngs.append(tempfile.NamedTemporaryFile(suffix='.png').name)
+                pyglet.image.get_buffer_manager().get_color_buffer().save(screenshot_pngs[-1])
+
+            pngs_to_pdf(screenshot_pngs, filename)
+
+            self.current_page = current_page
+            self.update_batch(self.batch)
+            change_mouse_cursor('default', window, self)
 
     def update_batch(self, batch):
         # it's a little bit cumbersome - the idea is just to update the 'batch' property of every shape
