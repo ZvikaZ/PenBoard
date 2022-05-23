@@ -4,6 +4,7 @@ import pyglet
 
 from misc import get_max_screens_width, get_max_screens_height, shape_to_dict, dict_to_shape
 import file_dialog
+from mouse_cursor import change_mouse_cursor
 
 BACKGROUND_COLOR = (1.0, 1.0, 1.0, 1.0)
 GRID_COLOR = (200, 200, 200)
@@ -57,12 +58,7 @@ class Board:
 
         self.clean_page()
 
-        # it's a little bit cumbersome - the idea is just to update the 'batch' property of every shape
-        # I couldn't find direct means of doing it, so we go over all shapes, and re-create them with new batch
-        shapes = {}
-        for key in self.get_current_shapes():
-            section = self.get_current_shapes()[key]
-            shapes[key] = [dict_to_shape(shape_to_dict(shape), self.batch) for shape in section]
+        shapes = self.update_batch(self.batch)
         self.pages[self.current_page] = shapes
 
     def create_grid(self, size):
@@ -92,7 +88,7 @@ class Board:
             shape = pyglet.shapes.Circle(p1[0], p1[1], radius=width / 2, color=self.active_color, batch=self.batch)
         else:
             shape = pyglet.shapes.Line(p1[0], p1[1], p2[0], p2[1], width=width, color=self.active_color,
-                                      batch=self.batch)
+                                       batch=self.batch)
         self.store(shape)
 
     def store(self, shape):
@@ -144,5 +140,23 @@ class Board:
                 self.pages.append(shapes)
             self.jump_page(0)
 
-    def export_to_pdf(self):
-        print("PDF")
+    def export_to_pdf(self, window):
+        change_mouse_cursor('wait', window, self)
+        batch = pyglet.graphics.Batch()
+        shapes = self.update_batch(batch)
+
+        window.clear()
+        batch.draw()
+        pyglet.image.get_buffer_manager().get_color_buffer().save('screenshot.png')
+
+        self.update_batch(self.batch)
+        change_mouse_cursor('default', window, self)
+
+    def update_batch(self, batch):
+        # it's a little bit cumbersome - the idea is just to update the 'batch' property of every shape
+        # I couldn't find direct means of doing it, so we go over all shapes, and re-create them with new batch
+        shapes = {}
+        for key in self.get_current_shapes():
+            section = self.get_current_shapes()[key]
+            shapes[key] = [dict_to_shape(shape_to_dict(shape), batch) for shape in section]
+        return shapes

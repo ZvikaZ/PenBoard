@@ -29,6 +29,8 @@ def change_mouse_cursor(type, window, board, width=None):
         cursor = EraserMouseCursor(width)
     elif type == 'pen':
         cursor = window.get_system_mouse_cursor(window.CURSOR_CROSSHAIR)
+    elif type == 'wait':
+        cursor = window.get_system_mouse_cursor(window.CURSOR_WAIT)
     elif type == 'default':
         cursor = ColoredMouseCursor(board.active_color)
     else:

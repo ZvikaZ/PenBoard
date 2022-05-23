@@ -28,7 +28,6 @@ pen = {}
 change_mouse_cursor('default', window, board)
 disable_exit_on_esc_key(window)
 
-
 if canvas is not None:
     @canvas.event
     def on_motion(cursor, x, y, pressure, tilt_x, tilt_y, buttons):
@@ -60,7 +59,7 @@ def on_key_press(symbol, modifiers):
     elif symbol == key.L:
         board.load()
     elif symbol == key.P:
-        board.export_to_pdf()
+        board.export_to_pdf(window)
     else:
         ColorChooser(board, window.width / 2, window.height / 2)
 
