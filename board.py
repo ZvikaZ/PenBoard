@@ -17,7 +17,7 @@ PAINT_COLORS = [(0, 0, 0),
                 (0, 255, 255),
                 ]
 CURRENT_PAGE_COLOR = (100, 0, 0, 255)
-LINES_HASH_DIVIDER = 50
+SHAPES_HASH_DIVIDER = 50
 
 
 class Board:
@@ -29,11 +29,11 @@ class Board:
         self.color_chooser = None
         self.current_page = 0
         self.pages = []
-        self.pages.append({'lines': {}})
+        self.pages.append({})
         self.create_grid(GRID_WIDTH)
 
-    def get_current_lines(self):
-        return self.pages[self.current_page]['lines']
+    def get_current_shapes(self):
+        return self.pages[self.current_page]
 
     def clean_page(self):
         self.batch = pyglet.graphics.Batch()
@@ -53,17 +53,17 @@ class Board:
                 self.pages[self.current_page]
                 break
             except IndexError:
-                self.pages.append({'lines': {}})
+                self.pages.append({})
 
         self.clean_page()
 
         # it's a little bit cumbersome - the idea is just to update the 'batch' property of every shape
-        # I couldn't find direct means of doint it, so we go over all lines, and re-create them with new batch
-        lines = {}
-        for key in self.get_current_lines():
-            section = self.get_current_lines()[key]
-            lines[key] = [dict_to_shape(shape_to_dict(line), self.batch) for line in section]
-        self.pages[self.current_page]['lines'] = lines
+        # I couldn't find direct means of doing it, so we go over all shapes, and re-create them with new batch
+        shapes = {}
+        for key in self.get_current_shapes():
+            section = self.get_current_shapes()[key]
+            shapes[key] = [dict_to_shape(shape_to_dict(shape), self.batch) for shape in section]
+        self.pages[self.current_page] = shapes
 
     def create_grid(self, size):
         self.grid = []
@@ -89,18 +89,18 @@ class Board:
 
     def add(self, p1, p2, width):
         if p1 == p2:
-            line = pyglet.shapes.Circle(p1[0], p1[1], radius=width / 2, color=self.active_color, batch=self.batch)
+            shape = pyglet.shapes.Circle(p1[0], p1[1], radius=width / 2, color=self.active_color, batch=self.batch)
         else:
-            line = pyglet.shapes.Line(p1[0], p1[1], p2[0], p2[1], width=width, color=self.active_color,
+            shape = pyglet.shapes.Line(p1[0], p1[1], p2[0], p2[1], width=width, color=self.active_color,
                                       batch=self.batch)
-        self.store(line)
+        self.store(shape)
 
-    def store(self, line):
-        """allows us to delete lines in O(1)"""
-        key = (line.x // LINES_HASH_DIVIDER, line.y // LINES_HASH_DIVIDER)
-        l = self.get_current_lines().get(key, [])
-        l.append(line)
-        self.get_current_lines()[key] = l
+    def store(self, shape):
+        """allows us to delete a shape in O(1)"""
+        key = (shape.x // SHAPES_HASH_DIVIDER, shape.y // SHAPES_HASH_DIVIDER)
+        l = self.get_current_shapes().get(key, [])
+        l.append(shape)
+        self.get_current_shapes()[key] = l
 
     def short_distance(self, obj1, obj2, threshold):
         try:
@@ -110,15 +110,15 @@ class Board:
             return math.dist(obj1, [obj2.x, obj2.y]) < threshold
 
     def remove(self, x, y, threshold):
-        key_x, key_y = x // LINES_HASH_DIVIDER, y // LINES_HASH_DIVIDER
+        key_x, key_y = x // SHAPES_HASH_DIVIDER, y // SHAPES_HASH_DIVIDER
         for i in [-1, 0, 1]:
             for j in [-1, 0, 1]:
                 key = (key_x + i, key_y + j)
-                l = self.get_current_lines().get(key, [])
-                for line in l:
-                    if self.short_distance((x, y), line, threshold):
-                        l.remove(line)
-                self.get_current_lines()[key] = l
+                l = self.get_current_shapes().get(key, [])
+                for shape in l:
+                    if self.short_distance((x, y), shape, threshold):
+                        l.remove(shape)
+                self.get_current_shapes()[key] = l
 
     def update_pen_color(self, color):
         self.active_color = color
@@ -129,8 +129,8 @@ class Board:
         filename = save_as._open_dialog(save_as._dialog)
         if filename:
             with open(filename, 'wb') as f:
-                pickle.dump([list((k, [shape_to_dict(s) for s in p['lines'][k]])
-                                  for k in p['lines'].keys()) for p in self.pages], f)
+                pickle.dump([list((k, [shape_to_dict(s) for s in p[k]])
+                                  for k in p.keys()) for p in self.pages], f)
 
     def load(self):
         load_dialog = file_dialog.FileOpenDialog(filetypes=[("PNB", ".pnb"), ("PenBoard", ".bnb")])
@@ -138,10 +138,10 @@ class Board:
         with open(filename, 'rb') as f:
             self.pages = []
             for page in pickle.load(f):
-                lines = {}
+                shapes = {}
                 for key, section in page:
-                    lines[key] = [dict_to_shape(line, self.batch) for line in section]
-                self.pages.append({'lines': lines})
+                    shapes[key] = [dict_to_shape(shape, self.batch) for shape in section]
+                self.pages.append(shapes)
             self.jump_page(0)
 
     def export_to_pdf(self):
