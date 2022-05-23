@@ -1,11 +1,12 @@
-# TODO: save
 # TODO: create PDF
 
 # TODO: icons bar (next, prev, save, load, pdf, clean, undo, quit)
+# TODO: clean page not really working
 # TODO: better colors to choose from
 # TODO: keyboard shortcuts (explain how to choose color)
 # TODO: fix 'page % of %'
 # TODO: change brush size
+# TODO: does save/load restore an exact copy?
 # TODO: undo
 # TODO: readme
 

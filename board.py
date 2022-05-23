@@ -1,9 +1,8 @@
 import math
-import pickle  
-import dill    #TODO remove?
+import pickle
 import pyglet
 
-from misc import get_max_screens_width, get_max_screens_height
+from misc import get_max_screens_width, get_max_screens_height, shape_to_dict, dict_to_shape
 import file_dialog
 
 BACKGROUND_COLOR = (1.0, 1.0, 1.0, 1.0)
@@ -126,11 +125,21 @@ class Board:
         filename = save_as._open_dialog(save_as._dialog)
         if filename:
             with open(filename, 'wb') as f:
-                dill.dump(self.pages[self.current_page]['lines'], f)
+                pickle.dump([list((k, [shape_to_dict(s) for s in p['lines'][k]])
+                                  for k in p['lines'].keys()) for p in self.pages], f)
 
     def load(self):
         load_dialog = file_dialog.FileOpenDialog(filetypes=[("PNB", ".pnb"), ("PenBoard", ".bnb")])
         filename = load_dialog._open_dialog(load_dialog._dialog)
         with open(filename, 'rb') as f:
-            self.pages = pickle.load(f)
+            self.pages = []
+            for page in pickle.load(f):
+                batch = pyglet.graphics.Batch()
+                lines = {}
+                for key, section in page:
+                    lines[key] = [dict_to_shape(line, batch) for line in section]
+                self.pages.append({'lines': lines, 'batch': batch})
             self.jump_page(0)
+
+
+
