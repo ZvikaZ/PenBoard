@@ -13,6 +13,7 @@ PAINT_COLORS = [(0, 0, 0),
                 (255, 0, 255),
                 (0, 255, 255),
                 ]
+CURRENT_PAGE_COLOR = (100, 0, 0, 255)
 LINES_HASH_DIVIDER = 50
 
 
@@ -21,12 +22,12 @@ class Board:
         self.lines = {}
         self.batch = pyglet.graphics.Batch()
         pyglet.gl.glClearColor(*BACKGROUND_COLOR)
-        self.create_grid(GRID_WIDTH)
         self.paint_colors = PAINT_COLORS
         self.active_color = self.paint_colors[0]
         self.color_chooser = None
         self.current_page = 0
         self.pages = []
+        self.create_grid(GRID_WIDTH)
 
     def clean_page(self):
         self.lines = {}
@@ -46,14 +47,15 @@ class Board:
         except IndexError:
             self.pages.append({'lines': self.lines, 'batch': self.batch})
 
+        self.current_page = new_page
+
         try:
-            self.lines = self.pages[new_page]['lines']
-            self.batch = self.pages[new_page]['batch']
+            self.lines = self.pages[self.current_page]['lines']
+            self.batch = self.pages[self.current_page]['batch']
             self.create_grid(GRID_WIDTH)
         except IndexError:
             self.clean_page()
 
-        self.current_page = new_page
 
     def create_grid(self, size):
         self.grid = []
@@ -67,6 +69,12 @@ class Board:
             i += size
             line = pyglet.shapes.Line(i, 0, i, get_max_screens_height(), width=1, color=GRID_COLOR, batch=self.batch)
             self.grid.append(line)
+        self.grid.append(pyglet.text.Label('Page: ' + str(self.current_page + 1),
+                                           font_size=14,
+                                           color=CURRENT_PAGE_COLOR,
+                                           x=15,
+                                           y=15,
+                                           batch=self.batch))
 
     def draw(self):
         self.batch.draw()

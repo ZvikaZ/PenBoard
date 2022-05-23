@@ -1,5 +1,3 @@
-# TODO: scrolling/pages
-
 # TODO: save
 # TODO: create PDF
 # TODO: undo
