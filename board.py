@@ -1,6 +1,7 @@
 import math
 import pyglet
 from misc import get_max_screens_width, get_max_screens_height
+import file_dialog
 
 BACKGROUND_COLOR = (1.0, 1.0, 1.0, 1.0)
 GRID_COLOR = (200, 200, 200)
@@ -114,3 +115,14 @@ class Board:
 
     def update_pen_color(self, color):
         self.active_color = color
+
+    def save(self):
+        save_as = file_dialog.FileSaveDialog(initial_file="whiteboard", filetypes=[("PNB", ".pnb"), ("PenBoard", ".pnb")])
+        filename = save_as._open_dialog(save_as._dialog)
+        print('save', filename)
+
+    def load(self):
+        load_dialog = file_dialog.FileOpenDialog(filetypes=[("PNB", ".pnb"), ("PenBoard", ".bnb")])
+        filename = load_dialog._open_dialog(load_dialog._dialog)
+        print('load', filename)
+

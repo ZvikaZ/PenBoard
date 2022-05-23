@@ -1,11 +1,12 @@
 # TODO: save
 # TODO: create PDF
+# TODO: don't quit on escape?
 # TODO: undo
 
 # TODO: better colors to choose from
+# TODO: icons bar (next, prev, save, load, pdf, clean, undo)
 # TODO: keyboard shortcuts (explain how to choose color)
 # TODO: change brush size
-# TODO: clean page
 # TODO: readme
 
 import pyglet
@@ -49,6 +50,12 @@ def on_key_press(symbol, modifiers):
         board.down()
     elif symbol == key.UP:
         board.up()
+    elif symbol == key.C:
+        board.clean_page()
+    elif symbol == key.S:
+        board.save()
+    elif symbol == key.L:
+        board.load()
     else:
         ColorChooser(board, window.width / 2, window.height / 2)
 
