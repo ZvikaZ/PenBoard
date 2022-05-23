@@ -200,14 +200,15 @@ class Board:
     def load(self):
         load_dialog = file_dialog.FileOpenDialog(filetypes=[("PNB", ".pnb"), ("PenBoard", ".bnb")])
         filename = load_dialog._open_dialog(load_dialog._dialog)
-        with open(filename, 'rb') as f:
-            self.pages = []
-            for page in pickle.load(f):
-                shapes = {}
-                for key, section in page:
-                    shapes[key] = [dict_to_shape(shape, self.batch) for shape in section]
-                self.pages.append(shapes)
-            self.jump_page(0)
+        if filename:
+            with open(filename, 'rb') as f:
+                self.pages = []
+                for page in pickle.load(f):
+                    shapes = {}
+                    for key, section in page:
+                        shapes[key] = [dict_to_shape(shape, self.batch) for shape in section]
+                    self.pages.append(shapes)
+                self.jump_page(0)
 
     def export_to_pdf(self, window):
         save_as = file_dialog.FileSaveDialog(initial_file="PenBoard",

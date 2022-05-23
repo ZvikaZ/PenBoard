@@ -1,13 +1,12 @@
 # TODO: menu: help
 # TODO: (menu: color chooser works only with right click) ?
-# TODO: don't issue warnings on missing filenames from dialogs
 # TODO: better colors to choose from
 # TODO: keyboard shortcuts (explain how to choose color)
 # TODO: change brush size
 # TODO: replace 'clean page' with 'delete page'
 # TODO: don't change mouse cursor on menu
 # TODO: does save/load restore an exact copy?
-# TODO: undo
+# TODO: undo (redo?)
 # TODO: readme
 
 import pyglet
