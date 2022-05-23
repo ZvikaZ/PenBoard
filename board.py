@@ -6,6 +6,7 @@ import tempfile
 from misc import *
 import file_dialog
 from mouse_cursor import change_mouse_cursor
+from color_chooser import ColorChooser
 
 BACKGROUND_COLOR = (1.0, 1.0, 1.0, 1.0)
 GRID_COLOR = (200, 200, 200)
@@ -23,7 +24,8 @@ SHAPES_HASH_DIVIDER = 50
 
 
 class Board:
-    def __init__(self):
+    def __init__(self, window):
+        self.window = window
         self.batch = pyglet.graphics.Batch()
         pyglet.gl.glClearColor(*BACKGROUND_COLOR)
         self.paint_colors = PAINT_COLORS
@@ -74,11 +76,65 @@ class Board:
             i += size
             line = pyglet.shapes.Line(i, 0, i, get_max_screens_height(), width=1, color=GRID_COLOR, batch=self.batch)
             self.grid.append(line)
+        self.create_toolbar()
+
+    def create_toolbar(self):
+        def help_button_handler():
+            print("help")
+
+        def color_button_handler():
+            ColorChooser(self, self.window.width / 2, self.window.height / 2)
+
+        def prev_button_handler():
+            self.up()
+
+        def next_button_handler():
+            self.down()
+
+        def save_button_handler():
+            self.save()
+
+        def load_button_handler():
+            self.load()
+
+        def pdf_button_handler():
+            self.export_to_pdf(self.window)
+
+        def clean_button_handler():
+            self.erase_page()
+
+        def close_button_handler():
+            pyglet.app.exit()
+
+        pngs_and_handlers = [
+            ('icons8-help-48.png', help_button_handler),
+            ('icons8-color-wheel-48.png', color_button_handler),
+            ('icons8-back-to-48.png', prev_button_handler),
+            ('icons8-next-page-48.png', next_button_handler),
+            ('icons8-save-48.png', save_button_handler),
+            ('icons8-opened-folder-48.png', load_button_handler),
+            ('icons8-export-pdf-48.png', pdf_button_handler),
+            ('icons8-paper-48.png', clean_button_handler),
+            # 'icons8-undo-48.png',
+            # 'icons8-redo-48.png',
+            ('icons8-close-window-48.png', close_button_handler),
+        ]
+
+        x = 10
+        y = self.window.height - 60
+        self.frame = pyglet.gui.Frame(self.window, order=4)
+        for png, handler in pngs_and_handlers:
+            image = pyglet.resource.image(png)
+            button = pyglet.gui.PushButton(x, y, pressed=image, depressed=image, batch=self.batch)
+            button.set_handler('on_press', handler)
+            self.frame.add_widget(button)
+            x += 60
+
         self.grid.append(pyglet.text.Label(f'Page: {self.current_page + 1} of {len(self.pages)}',
                                            font_size=14,
                                            color=CURRENT_PAGE_COLOR,
-                                           x=15,
-                                           y=15,
+                                           x=x,
+                                           y=y + 10,
                                            batch=self.batch))
 
     def draw(self):

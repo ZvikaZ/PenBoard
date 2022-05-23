@@ -1,7 +1,13 @@
-# TODO: icons bar (next, prev, color, save, load, pdf, clean, undo, quit, help)
+# TODO: menu: color chooser works only with right click
+# TODO: menu: adjust on window resize
+# TODO: menu: don't draw grid on toolbar
+# TODO: menu: don't paint to toolbar area
+# TODO: menu: help
+# TODO: don't issue warnings on missing filenames from dialogs
 # TODO: better colors to choose from
 # TODO: keyboard shortcuts (explain how to choose color)
 # TODO: change brush size
+# TODO: replace 'clean page' with 'delete page'
 # TODO: does save/load restore an exact copy?
 # TODO: undo
 # TODO: readme
@@ -16,9 +22,12 @@ from color_chooser import ColorChooser
 from misc import disable_exit_on_esc_key
 import operations
 
+pyglet.resource.path = ['resources']
+pyglet.resource.reindex()
+
 window = pyglet.window.Window(1200, 900, caption="PenBoard", resizable=True)
 
-board = Board()
+board = Board(window)
 canvas = tablet.open_tablet(window)
 pen = {}
 
