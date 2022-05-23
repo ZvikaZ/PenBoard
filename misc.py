@@ -2,14 +2,6 @@ import pyglet
 from PIL import Image
 
 
-def get_max_screens_width():
-    return max([s.width for s in pyglet.canvas.get_display().get_screens()])
-
-
-def get_max_screens_height():
-    return max([s.height for s in pyglet.canvas.get_display().get_screens()])
-
-
 def disable_exit_on_esc_key(window):
     def on_key_press(symbol, modifiers):
         if symbol == pyglet.window.key.ESCAPE:
@@ -43,7 +35,8 @@ def dict_to_shape(shape, batch):
     if shape['kind'] == 'Circle':
         obj = pyglet.shapes.Circle(shape['x'], shape['y'], radius=shape['radius'], color=shape['color'], batch=batch)
     elif shape['kind'] == 'Line':
-        obj = pyglet.shapes.Line(shape['x'], shape['y'], shape['x2'], shape['y2'], width=shape['width'], color=shape['color'], batch=batch)
+        obj = pyglet.shapes.Line(shape['x'], shape['y'], shape['x2'], shape['y2'], width=shape['width'],
+                                 color=shape['color'], batch=batch)
     else:
         raise ValueError('Unhandled "dict_to_shape" type: ' + shape['kind'])
     obj.opacity = shape['opacity']
@@ -64,4 +57,3 @@ def pngs_to_pdf(input_pngs, output_pdf):
 
     # from https://stackoverflow.com/a/47283224/1543290
     rgb_pngs[0].save(output_pdf, "PDF", resolution=100.0, save_all=True, append_images=rgb_pngs[1:])
-

@@ -35,6 +35,7 @@ class Board:
         self.pages = []
         self.pages.append({})
         self.create_grid(GRID_WIDTH)
+        self.upper_y = None
 
     def get_current_shapes(self):
         return self.pages[self.current_page]
@@ -65,16 +66,17 @@ class Board:
         self.pages[self.current_page] = shapes
 
     def create_grid(self, size):
+        self.upper_y = self.window.height - size
         self.grid = []
-        i = get_max_screens_height()
+        i = self.window.height
         while i > 0:
-            line = pyglet.shapes.Line(0, i, get_max_screens_width(), i, width=1, color=GRID_COLOR, batch=self.batch)
+            line = pyglet.shapes.Line(0, i, self.window.width, i, width=1, color=GRID_COLOR, batch=self.batch)
             self.grid.append(line)
             i -= size
         i = 0
-        while i < get_max_screens_width():
+        while i < self.window.width:
             i += size
-            line = pyglet.shapes.Line(i, 0, i, get_max_screens_height(), width=1, color=GRID_COLOR, batch=self.batch)
+            line = pyglet.shapes.Line(i, 0, i, self.window.height - size, width=1, color=GRID_COLOR, batch=self.batch)
             self.grid.append(line)
         self.create_toolbar()
 
@@ -121,7 +123,7 @@ class Board:
         ]
 
         x = 10
-        y = self.window.height - 60
+        y = self.window.height - 50
         self.frame = pyglet.gui.Frame(self.window, order=4)
         for png, handler in pngs_and_handlers:
             image = pyglet.resource.image(png)
@@ -139,6 +141,16 @@ class Board:
 
     def draw(self):
         self.batch.draw()
+
+    def paint(self, pressure, x, y, prev_point):
+        if y <= self.upper_y:
+            width = 6 * (pressure / 2 + 0.5)
+            self.add((x, y), prev_point, width)
+
+    def erase(self, pressure, x, y):
+        width = pressure * 50
+        self.remove(x, y, width)
+        return width
 
     def add(self, p1, p2, width):
         if p1 == p2:

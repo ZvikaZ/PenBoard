@@ -1,13 +1,11 @@
-# TODO: menu: color chooser works only with right click
-# TODO: menu: adjust on window resize
-# TODO: menu: don't draw grid on toolbar
-# TODO: menu: don't paint to toolbar area
 # TODO: menu: help
+# TODO: (menu: color chooser works only with right click) ?
 # TODO: don't issue warnings on missing filenames from dialogs
 # TODO: better colors to choose from
 # TODO: keyboard shortcuts (explain how to choose color)
 # TODO: change brush size
 # TODO: replace 'clean page' with 'delete page'
+# TODO: don't change mouse cursor on menu
 # TODO: does save/load restore an exact copy?
 # TODO: undo
 # TODO: readme
@@ -20,7 +18,6 @@ from board import Board
 from mouse_cursor import change_mouse_cursor
 from color_chooser import ColorChooser
 from misc import disable_exit_on_esc_key
-import operations
 
 pyglet.resource.path = ['resources']
 pyglet.resource.reindex()
@@ -96,10 +93,10 @@ def on_mouse_press(x, y, button, modifiers):
             board.color_chooser.handle_click(x, y)
         else:
             change_mouse_cursor('pen', window, board)
-            operations.paint(board, pen.get('pressure', 0.4), x, y, (x, y))
+            board.paint(pen.get('pressure', 0.4), x, y, (x, y))
             on_mouse_drag.prev_point = (x, y)
     elif combined_buttons(button) == 'erase':
-        width = operations.erase(board, pen.get('pressure', 0.5), x, y)
+        width = board.erase(pen.get('pressure', 0.5), x, y)
         change_mouse_cursor('eraser', window, board, width=width)
     elif combined_buttons(button) == 'select':
         ColorChooser(board, x, y)
@@ -116,14 +113,19 @@ def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
     if combined_buttons(buttons) == 'click':
         change_mouse_cursor('pen', window, board)
         if on_mouse_drag.prev_point is not None:
-            operations.paint(board, pen.get('pressure', 0.6), x, y, on_mouse_drag.prev_point)
+            board.paint(pen.get('pressure', 0.6), x, y, on_mouse_drag.prev_point)
         on_mouse_drag.prev_point = (x, y)
     elif combined_buttons(buttons) == 'erase':
-        width = operations.erase(board, pen.get('pressure', 0.5), x, y)
+        width = board.erase(pen.get('pressure', 0.5), x, y)
         change_mouse_cursor('eraser', window, board, width=width)
 
 
 on_mouse_drag.prev_point = None
+
+
+@window.event
+def on_resize(width, height):
+    board.clean_page()
 
 
 @window.event
