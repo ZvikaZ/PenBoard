@@ -4,7 +4,6 @@
 # TODO: clean page not really working
 # TODO: better colors to choose from
 # TODO: keyboard shortcuts (explain how to choose color)
-# TODO: fix 'page % of %'
 # TODO: change brush size
 # TODO: does save/load restore an exact copy?
 # TODO: undo
@@ -60,6 +59,8 @@ def on_key_press(symbol, modifiers):
         board.save()
     elif symbol == key.L:
         board.load()
+    elif symbol == key.P:
+        board.export_to_pdf()
     else:
         ColorChooser(board, window.width / 2, window.height / 2)
 

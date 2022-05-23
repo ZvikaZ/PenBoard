@@ -29,7 +29,7 @@ class Board:
         self.color_chooser = None
         self.current_page = 0
         self.pages = []
-        self.pages.append({'lines': {}, 'batch': self.batch})
+        self.pages.append({'lines': {}})
         self.create_grid(GRID_WIDTH)
 
     def get_current_lines(self):
@@ -53,13 +53,17 @@ class Board:
                 self.pages[self.current_page]
                 break
             except IndexError:
-                self.pages.append({'lines': {}, 'batch': pyglet.graphics.Batch()})
+                self.pages.append({'lines': {}})
 
-        try:
-            self.batch = self.pages[self.current_page]['batch']
-            self.create_grid(GRID_WIDTH)
-        except IndexError:
-            self.clean_page()
+        self.clean_page()
+
+        # it's a little bit cumbersome - the idea is just to update the 'batch' property of every shape
+        # I couldn't find direct means of doint it, so we go over all lines, and re-create them with new batch
+        lines = {}
+        for key in self.get_current_lines():
+            section = self.get_current_lines()[key]
+            lines[key] = [dict_to_shape(shape_to_dict(line), self.batch) for line in section]
+        self.pages[self.current_page]['lines'] = lines
 
     def create_grid(self, size):
         self.grid = []
@@ -134,12 +138,11 @@ class Board:
         with open(filename, 'rb') as f:
             self.pages = []
             for page in pickle.load(f):
-                batch = pyglet.graphics.Batch()
                 lines = {}
                 for key, section in page:
-                    lines[key] = [dict_to_shape(line, batch) for line in section]
-                self.pages.append({'lines': lines, 'batch': batch})
+                    lines[key] = [dict_to_shape(line, self.batch) for line in section]
+                self.pages.append({'lines': lines})
             self.jump_page(0)
 
-
-
+    def export_to_pdf(self):
+        print("PDF")
