@@ -7,6 +7,7 @@ from misc import *
 import file_dialog
 from mouse_cursor import change_mouse_cursor
 from color_chooser import ColorChooser
+from help import show_help
 
 BACKGROUND_COLOR = (1.0, 1.0, 1.0, 1.0)
 GRID_COLOR = (200, 200, 200)
@@ -82,7 +83,7 @@ class Board:
 
     def create_toolbar(self):
         def help_button_handler():
-            print("help")
+            show_help()
 
         def color_button_handler():
             ColorChooser(self, self.window.width / 2, self.window.height / 2)
@@ -248,3 +249,4 @@ class Board:
     def erase_page(self):
         self.pages[self.current_page] = {}
         self.clean_page()
+

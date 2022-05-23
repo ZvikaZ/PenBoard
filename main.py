@@ -1,11 +1,12 @@
-# TODO: menu: help
-# TODO: (menu: color chooser works only with right click) ?
 # TODO: better colors to choose from
-# TODO: keyboard shortcuts (explain how to choose color)
-# TODO: change brush size
 # TODO: replace 'clean page' with 'delete page'
+# TODO: (menu: color chooser works only with right click) ?
+# TODO: change brush size
 # TODO: don't change mouse cursor on menu
 # TODO: does save/load restore an exact copy?
+# TODO: margin in help text
+# TODO: return focus to main window after save/restore/pdf
+# TODO: improve PDF quality?
 # TODO: undo (redo?)
 # TODO: readme
 
@@ -17,6 +18,7 @@ from board import Board
 from mouse_cursor import change_mouse_cursor
 from color_chooser import ColorChooser
 from misc import disable_exit_on_esc_key
+from help import show_help
 
 pyglet.resource.path = ['resources']
 pyglet.resource.reindex()
@@ -54,16 +56,20 @@ def on_key_press(symbol, modifiers):
         board.down()
     elif symbol == key.UP:
         board.up()
-    elif symbol == key.C:
-        board.erase_page()
-    elif symbol == key.S:
-        board.save()
-    elif symbol == key.L:
-        board.load()
-    elif symbol == key.P:
-        board.export_to_pdf(window)
-    else:
+    elif symbol == key.C and not (modifiers & key.MOD_CTRL):
         ColorChooser(board, window.width / 2, window.height / 2)
+    elif symbol == key.D and modifiers & key.MOD_CTRL :
+        board.erase_page()
+    elif symbol == key.S and modifiers & key.MOD_CTRL:
+        board.save()
+    elif symbol == key.L and modifiers & key.MOD_CTRL:
+        board.load()
+    elif symbol == key.P and modifiers & key.MOD_CTRL:
+        board.export_to_pdf(window)
+    elif symbol == key.F1:
+        show_help()
+    elif symbol == key.Q and modifiers & key.MOD_CTRL:
+        pyglet.app.exit()
 
 
 def combined_buttons(button):
