@@ -1,4 +1,4 @@
-# TODO: icons bar (next, prev, save, load, pdf, clean, undo, quit)
+# TODO: icons bar (next, prev, color, save, load, pdf, clean, undo, quit, help)
 # TODO: better colors to choose from
 # TODO: keyboard shortcuts (explain how to choose color)
 # TODO: change brush size
