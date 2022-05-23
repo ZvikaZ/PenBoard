@@ -70,7 +70,7 @@ class Board:
             i += size
             line = pyglet.shapes.Line(i, 0, i, get_max_screens_height(), width=1, color=GRID_COLOR, batch=self.batch)
             self.grid.append(line)
-        self.grid.append(pyglet.text.Label('Page: ' + str(self.current_page + 1),
+        self.grid.append(pyglet.text.Label(f'Page: {self.current_page + 1}',
                                            font_size=14,
                                            color=CURRENT_PAGE_COLOR,
                                            x=15,

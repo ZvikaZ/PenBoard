@@ -1,11 +1,11 @@
 # TODO: save
 # TODO: create PDF
-# TODO: don't quit on escape?
 # TODO: undo
 
 # TODO: better colors to choose from
 # TODO: icons bar (next, prev, save, load, pdf, clean, undo)
 # TODO: keyboard shortcuts (explain how to choose color)
+# TODO: write current page out of total pages
 # TODO: change brush size
 # TODO: readme
 
@@ -16,6 +16,7 @@ import tablet
 from board import Board
 from mouse_cursor import change_mouse_cursor
 from color_chooser import ColorChooser
+from misc import disable_exit_on_esc_key
 import operations
 
 window = pyglet.window.Window(1200, 900, caption="PenBoard", resizable=True)
@@ -25,6 +26,8 @@ canvas = tablet.open_tablet(window)
 pen = {}
 
 change_mouse_cursor('default', window, board)
+disable_exit_on_esc_key(window)
+
 
 if canvas is not None:
     @canvas.event
