@@ -2,15 +2,16 @@
 # TODO: replace 'clean page' with 'delete page'
 # TODO: PyInstaller + NSIS
 # TODO: circlized lines - with varying pressure
-# TODO: (menu: color chooser works only with right click) ?
+# TODO: undo + redo
+# TODO: readme
+
 # TODO: change brush size
 # TODO: don't change mouse cursor on menu
 # TODO: does save/load restore an exact copy?
 # TODO: clickable buttons picture
 # TODO: return focus to main window after save/restore/pdf
 # TODO: improve PDF quality?
-# TODO: undo + redo
-# TODO: readme
+
 
 import pyglet
 from pyglet.window import key
@@ -100,18 +101,21 @@ def combined_buttons(button):
 
 @window.event
 def on_mouse_press(x, y, button, modifiers):
-    if combined_buttons(button) == 'click':
-        if board.color_chooser is not None:
-            board.color_chooser.handle_click(x, y)
-        else:
-            change_mouse_cursor('pen', window, board)
-            board.paint(pen.get('pressure', 0.4), x, y, (x, y))
-            on_mouse_drag.prev_point = (x, y)
-    elif combined_buttons(button) == 'erase':
-        width = board.erase(pen.get('pressure', 0.5), x, y)
-        change_mouse_cursor('eraser', window, board, width=width)
-    elif combined_buttons(button) == 'select':
-        ColorChooser(board, x, y)
+    # without this if the mouse click is going all the way to ColorChooser.handle_click ,
+    # making it impossible to open it with left clicking on toolbar
+    if y < board.upper_y:
+        if combined_buttons(button) == 'click':
+            if board.color_chooser is not None:
+                board.color_chooser.handle_click(x, y)
+            else:
+                change_mouse_cursor('pen', window, board)
+                board.paint(pen.get('pressure', 0.4), x, y, (x, y))
+                on_mouse_drag.prev_point = (x, y)
+        elif combined_buttons(button) == 'erase':
+            width = board.erase(pen.get('pressure', 0.5), x, y)
+            change_mouse_cursor('eraser', window, board, width=width)
+        elif combined_buttons(button) == 'select':
+            ColorChooser(board, x, y)
 
 
 @window.event
