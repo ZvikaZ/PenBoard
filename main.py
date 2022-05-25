@@ -1,6 +1,7 @@
-# TODO: PyInstaller + NSIS
+# TODO: NSIS
 # TODO: undo + redo
 # TODO: readme
+# TODO: program icon
 
 # TODO: change brush size
 # TODO: don't change mouse cursor on menu

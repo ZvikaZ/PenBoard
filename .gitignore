@@ -2,3 +2,7 @@
 __pycache__/
 *.pnb
 *.pdf
+
+PenBoard.spec
+build/
+dist/
