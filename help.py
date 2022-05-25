@@ -26,7 +26,7 @@ TOOLBAR: explained from left to right (with keyboard shortcuts)
 - load (CTRL-L)
 - save page as image (CTRL-I)
 - export to PDF (CTRL-P)
-- erase current page's contents (CTRL-D)
+- delete current page (CTRL-D)
 - quit (CTRL-Q)
 
 * Note that there are no confirmations for any action

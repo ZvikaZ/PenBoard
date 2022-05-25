@@ -1,5 +1,4 @@
 # TODO: better colors to choose from
-# TODO: replace 'clean page' with 'delete page'
 # TODO: PyInstaller + NSIS
 # TODO: undo + redo
 # TODO: readme
@@ -65,7 +64,7 @@ def on_key_press(symbol, modifiers):
     elif symbol == key.C and not (modifiers & key.MOD_CTRL):
         ColorChooser(board, window.width / 2, window.height / 2)
     elif symbol == key.D and modifiers & key.MOD_CTRL :
-        board.erase_page()
+        board.delete_page()
     elif symbol == key.S and modifiers & key.MOD_CTRL:
         board.save()
     elif symbol == key.L and modifiers & key.MOD_CTRL:

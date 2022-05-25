@@ -55,6 +55,8 @@ class Board:
             self.jump_page(self.current_page - 1)
 
     def jump_page(self, new_page):
+        if new_page < 0:
+            raise ValueError("Negative page number")
         self.current_page = new_page
         while True:
             try:
@@ -108,8 +110,8 @@ class Board:
         def pdf_button_handler():
             self.export_to_pdf(self.window)
 
-        def clean_button_handler():
-            self.erase_page()
+        def delete_button_handler():
+            self.delete_page()
 
         def close_button_handler():
             pyglet.app.exit()
@@ -123,7 +125,7 @@ class Board:
             ('icons8-opened-folder-48.png', load_button_handler),
             ('icons8-image-48.png', image_button_handler),
             ('icons8-export-pdf-48.png', pdf_button_handler),
-            ('icons8-paper-48.png', clean_button_handler),
+            ('icons8-delete-file-48.png', delete_button_handler),
             # 'icons8-undo-48.png',
             # 'icons8-redo-48.png',
             ('icons8-close-window-48.png', close_button_handler),
@@ -287,6 +289,13 @@ class Board:
             shapes[key] = [dict_to_shape(shape_to_dict(shape), batch) for shape in section]
         return shapes
 
-    def erase_page(self):
-        self.pages[self.current_page] = {}
-        self.clean_page()
+    def delete_page(self):
+        del self.pages[self.current_page]
+
+        # show the next page ; unless we deleted the last page - then show the previous (if possible)
+        if self.current_page < len(self.pages):
+            self.jump_page(self.current_page)
+        elif self.current_page > 0:
+            self.jump_page((self.current_page - 1))
+        else:
+            self.jump_page(self.current_page)
