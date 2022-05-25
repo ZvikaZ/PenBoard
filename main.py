@@ -1,5 +1,3 @@
-# TODO: save state dicts, with version
-
 # TODO: better colors to choose from
 # TODO: replace 'clean page' with 'delete page'
 # TODO: PyInstaller + NSIS

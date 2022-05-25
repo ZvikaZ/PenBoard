@@ -207,8 +207,10 @@ class Board:
         filename = save_as._open_dialog(save_as._dialog)
         if filename:
             with open(filename, 'wb') as f:
-                pickle.dump([list((k, [shape_to_dict(s) for s in p[k]])
-                                  for k in p.keys()) for p in self.pages], f)
+                pickle.dump({
+                    'version': '0.1.0',
+                    'pages': [list((k, [shape_to_dict(s) for s in p[k]])
+                                  for k in p.keys()) for p in self.pages]}, f)
 
     def load(self):
         load_dialog = file_dialog.FileOpenDialog(filetypes=[("PNB", ".pnb"), ("PenBoard", ".bnb")])
@@ -216,7 +218,9 @@ class Board:
         if filename:
             with open(filename, 'rb') as f:
                 self.pages = []
-                for page in pickle.load(f):
+                dump = pickle.load(f)
+                # assert dump['version'] <= '0.1.0'
+                for page in dump['pages']:
                     shapes = {}
                     for key, section in page:
                         shapes[key] = [dict_to_shape(shape, self.batch) for shape in section]
