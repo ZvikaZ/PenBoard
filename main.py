@@ -1,9 +1,9 @@
-# TODO: cicrlize lines
 # TODO: save state dicts, with version
-# TODO: PyInstaller + NSIS
 
 # TODO: better colors to choose from
 # TODO: replace 'clean page' with 'delete page'
+# TODO: PyInstaller + NSIS
+# TODO: circlized lines - with varying pressure
 # TODO: (menu: color chooser works only with right click) ?
 # TODO: change brush size
 # TODO: don't change mouse cursor on menu

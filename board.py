@@ -9,6 +9,7 @@ from mouse_cursor import change_mouse_cursor
 from color_chooser import ColorChooser
 from help import show_help
 
+CIRCLIZED_LINES = True
 BACKGROUND_COLOR = (1.0, 1.0, 1.0, 1.0)
 GRID_COLOR = (200, 200, 200)
 GRID_WIDTH = 60
@@ -160,10 +161,17 @@ class Board:
     def add(self, p1, p2, width):
         if p1 == p2:
             shape = pyglet.shapes.Circle(p1[0], p1[1], radius=width / 2, color=self.active_color, batch=self.batch)
+            self.store(shape)
         else:
-            shape = pyglet.shapes.Line(p1[0], p1[1], p2[0], p2[1], width=width, color=self.active_color,
-                                       batch=self.batch)
-        self.store(shape)
+            if CIRCLIZED_LINES:
+                for point in get_points_in_line(p1[0], p1[1], p2[0], p2[1]):
+                    shape = pyglet.shapes.Circle(point[0], point[1], radius=width / 2, color=self.active_color,
+                                                 batch=self.batch)
+                    self.store(shape)
+            else:
+                shape = pyglet.shapes.Line(p1[0], p1[1], p2[0], p2[1], width=width, color=self.active_color,
+                                           batch=self.batch)
+                self.store(shape)
 
     def store(self, shape):
         """allows us to delete a shape in O(1)"""
@@ -255,9 +263,9 @@ class Board:
 
             pngs_to_pdf(screenshot_pngs, filename)
 
+            change_mouse_cursor('default', window, self)
             self.current_page = current_page
             self.update_batch(self.batch)
-            change_mouse_cursor('default', window, self)
 
     def update_batch(self, batch):
         # it's a little bit cumbersome - the idea is just to update the 'batch' property of every shape

@@ -57,3 +57,47 @@ def pngs_to_pdf(input_pngs, output_pdf):
 
     # from https://stackoverflow.com/a/47283224/1543290
     rgb_pngs[0].save(output_pdf, "PDF", resolution=100.0, save_all=True, append_images=rgb_pngs[1:])
+
+
+def get_points_in_line(x1, y1, x2, y2):
+    x_min = min(x1, x2)
+    x_max = max(x1, x2)
+    y_min = min(y1, y2)
+    y_max = max(y1, y2)
+    if x1 == x2:
+        return [(x1, y) for y in range(y_min, y_max + 1)]
+    elif y1 == y2:
+        return [(x, y1) for x in range(x_min, x_max + 1)]
+    elif abs(x2 - x1) > abs(y2 - y1):
+        if x_min == x1:
+            y_start = y1
+            y_end = y2
+        else:
+            y_start = y2
+            y_end = y1
+        rate = (y_end - y_start) / (x_max - x_min)
+        return [(x, y_start + i * rate) for i, x in enumerate(range(x_min, x_max + 1))]
+    else:
+        if y_min == y1:
+            x_start = x1
+            x_end = x2
+        else:
+            x_start = x2
+            x_end = x1
+        rate = (x_end - x_start) / (y_max - y_min)
+        return [(x_start + i * rate, y) for i, y in enumerate(range(y_min, y_max + 1))]
+
+
+if __name__ == '__main__':
+    import random
+
+    print(get_points_in_line(6, 1, 8, 0))
+
+    for i in range(100):
+        a = 0
+        b = 10
+        x1 = random.randint(a, b)
+        y1 = random.randint(a, b)
+        x2 = random.randint(a, b)
+        y2 = random.randint(a, b)
+        print(f'({x1},{y1})->({x2},{y2}): {get_points_in_line(x1, y1, x2, y2)}')
