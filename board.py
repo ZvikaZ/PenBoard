@@ -100,6 +100,9 @@ class Board:
         def load_button_handler():
             self.load()
 
+        def image_button_handler():
+            self.export_to_png(self.window)
+
         def pdf_button_handler():
             self.export_to_pdf(self.window)
 
@@ -116,6 +119,7 @@ class Board:
             ('icons8-next-page-48.png', next_button_handler),
             ('icons8-save-48.png', save_button_handler),
             ('icons8-opened-folder-48.png', load_button_handler),
+            ('icons8-image-48.png', image_button_handler),
             ('icons8-export-pdf-48.png', pdf_button_handler),
             ('icons8-paper-48.png', clean_button_handler),
             # 'icons8-undo-48.png',
@@ -211,6 +215,24 @@ class Board:
                     self.pages.append(shapes)
                 self.jump_page(0)
 
+    def export_to_png(self, window):
+        save_as = file_dialog.FileSaveDialog(initial_file="PenBoard",
+                                             filetypes=[("PNG", ".png"), ("", ".png")])
+        filename = save_as._open_dialog(save_as._dialog)
+        if filename:
+            change_mouse_cursor('wait', window, self)
+
+            batch = pyglet.graphics.Batch()
+            shapes = self.update_batch(batch)
+
+            window.clear()
+            batch.draw()
+
+            pyglet.image.get_buffer_manager().get_color_buffer().save(filename)
+
+            self.update_batch(self.batch)
+            change_mouse_cursor('default', window, self)
+
     def export_to_pdf(self, window):
         save_as = file_dialog.FileSaveDialog(initial_file="PenBoard",
                                              filetypes=[("PDF", ".pdf"), ("", ".pdf")])
@@ -249,4 +271,3 @@ class Board:
     def erase_page(self):
         self.pages[self.current_page] = {}
         self.clean_page()
-

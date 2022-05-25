@@ -1,6 +1,6 @@
 import pyglet
 
-HEIGHT = 660
+HEIGHT = 680
 WIDTH = 640
 MARGIN = 30
 HELP_BACKGROUND_COLOR = (1.0, 1.0, 1.0, 1.0)
@@ -24,6 +24,7 @@ TOOLBAR: explained from left to right (with keyboard shortcuts)
 - next page (DOWN ARROW)
 - save (CTRL-S)
 - load (CTRL-L)
+- save page as image (CTRL-I)
 - export to PDF (CTRL-P)
 - erase current page's contents (CTRL-D)
 - quit (CTRL-Q)

@@ -1,4 +1,3 @@
-# TODO: save .png
 # TODO: cicrlize lines
 # TODO: save state dicts, with version
 # TODO: PyInstaller + NSIS
@@ -57,6 +56,9 @@ if canvas is not None:
 
 @window.event
 def on_key_press(symbol, modifiers):
+    if (modifiers & key.MOD_ALT) or (modifiers & key.MOD_WINDOWS):
+        return
+
     if symbol == key.DOWN:
         board.down()
     elif symbol == key.UP:
@@ -69,6 +71,8 @@ def on_key_press(symbol, modifiers):
         board.save()
     elif symbol == key.L and modifiers & key.MOD_CTRL:
         board.load()
+    elif symbol == key.I and modifiers & key.MOD_CTRL:
+        board.export_to_png(window)
     elif symbol == key.P and modifiers & key.MOD_CTRL:
         board.export_to_pdf(window)
     elif symbol == key.F1:
