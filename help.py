@@ -1,7 +1,13 @@
 import pyglet
+
+HEIGHT = 660
+WIDTH = 640
+MARGIN = 30
 HELP_BACKGROUND_COLOR = (1.0, 1.0, 1.0, 1.0)
+HELP_TEXT_COLOR = (0, 0, 0, 255)
 HELP_FONT = 'Segoe UI'
 HELP_STR = '''Welcome to PenBoard!
+By Zvika Haramaty     https://github.com/ZvikaZ/PenBoard
 
 PenBoard is recommended to use with a pen tablet (such as Wacom devices), but also supports mouse usage.
 
@@ -24,29 +30,28 @@ TOOLBAR: explained from left to right (with keyboard shortcuts)
 
 * Note that there are no confirmations for any action
 * Beware - this is an early release; it might suddenly crush; your saves might not be loaded; etc.
+* We'd love to hear from you at https://github.com/ZvikaZ/PenBoard/issues
+* Toolbar Icons downloaded from https://icons8.com/ 
 
 * Click the mouse, or press any key, to dismiss this window
 '''
 
 help_window = None
 
+
 def show_help():
     global help_window
-    help_window = pyglet.window.Window(640, 600)
+    help_window = pyglet.window.Window(WIDTH, HEIGHT, resizable=True)
     pyglet.gl.glClearColor(*HELP_BACKGROUND_COLOR)
-    pyglet.font.load(HELP_FONT, 36)
+    label = pyglet.text.Label(HELP_STR, font_name=HELP_FONT, multiline=True,
+                              x=MARGIN, width=WIDTH - MARGIN * 2, y=HEIGHT - MARGIN,
+                              color=HELP_TEXT_COLOR)
 
-    document = pyglet.text.decode_text(HELP_STR)
-    document.set_style(0, 0, {
-        'font_name': HELP_FONT,
-    })
-    layout = pyglet.text.layout.TextLayout(document, help_window.width, help_window.height,
-                                           multiline=True, wrap_lines=True)
 
     @help_window.event
     def on_draw():
         help_window.clear()
-        layout.draw()
+        label.draw()
 
     @help_window.event
     def on_mouse_press(x, y, button, modifiers):
@@ -55,3 +60,8 @@ def show_help():
     @help_window.event
     def on_key_press(symbol, modifiers):
         help_window.close()
+
+    @help_window.event
+    def on_resize(width, height):
+        help_window.clear()
+        label.draw()

@@ -1,13 +1,18 @@
+# TODO: save .png
+# TODO: cicrlize lines
+# TODO: save state dicts, with version
+# TODO: PyInstaller + NSIS
+
 # TODO: better colors to choose from
 # TODO: replace 'clean page' with 'delete page'
 # TODO: (menu: color chooser works only with right click) ?
 # TODO: change brush size
 # TODO: don't change mouse cursor on menu
 # TODO: does save/load restore an exact copy?
-# TODO: margin in help text
+# TODO: clickable buttons picture
 # TODO: return focus to main window after save/restore/pdf
 # TODO: improve PDF quality?
-# TODO: undo (redo?)
+# TODO: undo + redo
 # TODO: readme
 
 import pyglet
