@@ -9,7 +9,8 @@ from mouse_cursor import change_mouse_cursor
 from color_chooser import ColorChooser
 from help import show_help
 
-CIRCLIZED_LINES = True
+CIRCLIZED_LINES = False
+DEBUG = False
 BACKGROUND_COLOR = (1.0, 1.0, 1.0, 1.0)
 GRID_COLOR = (200, 200, 200)
 GRID_WIDTH = 60
@@ -163,10 +164,16 @@ class Board:
             shape = pyglet.shapes.Circle(p1[0], p1[1], radius=width / 2, color=self.active_color, batch=self.batch)
             self.store(shape)
         else:
+            if DEBUG:
+                shape = pyglet.shapes.Circle(p1[0], p1[1], radius=width, color=(200, 0, 0), batch=self.batch)
+                self.store(shape)
+                shape = pyglet.shapes.Circle(p2[0], p2[1], radius=width, color=(200, 0, 0), batch=self.batch)
+                self.store(shape)
+                self.active_color = (0,200,0)
+
             if CIRCLIZED_LINES:
                 for point in get_points_in_line(p1[0], p1[1], p2[0], p2[1]):
-                    shape = pyglet.shapes.Circle(point[0], point[1], radius=width / 2, color=self.active_color,
-                                                 batch=self.batch)
+                    shape = pyglet.shapes.Circle(point[0], point[1], radius=width / 2, color=self.active_color, batch=self.batch)
                     self.store(shape)
             else:
                 shape = pyglet.shapes.Line(p1[0], p1[1], p2[0], p2[1], width=width, color=self.active_color,

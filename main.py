@@ -1,7 +1,6 @@
 # TODO: better colors to choose from
 # TODO: replace 'clean page' with 'delete page'
 # TODO: PyInstaller + NSIS
-# TODO: circlized lines - with varying pressure
 # TODO: undo + redo
 # TODO: readme
 
@@ -11,6 +10,7 @@
 # TODO: clickable buttons picture
 # TODO: return focus to main window after save/restore/pdf
 # TODO: improve PDF quality?
+# TODO: circlized lines - with varying pressure
 
 
 import pyglet
