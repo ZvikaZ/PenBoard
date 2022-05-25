@@ -14,14 +14,22 @@ DEBUG = False
 BACKGROUND_COLOR = (1.0, 1.0, 1.0, 1.0)
 GRID_COLOR = (200, 200, 200)
 GRID_WIDTH = 60
-PAINT_COLORS = [(0, 0, 0),
-                (255, 0, 0),
-                (0, 255, 0),
-                (0, 0, 255),
-                (255, 255, 0),
-                (255, 0, 255),
-                (0, 255, 255),
-                ]
+PAINT_COLORS = [
+    (31, 31, 31),  # black
+    (254, 212, 48),  # yellow
+    (251, 174, 23),  # light orange
+    (243, 99, 35),  # orange
+    (231, 18, 36),  # red
+    (91, 49, 141),  # dark purple
+    (145, 75, 184),  # purple
+    (207, 18, 120),  # magenta
+    (193, 0, 81),  # dark red
+    (62, 204, 253),  # light blue
+    (0, 105, 191),  # dark blue
+    (126, 196, 0),  # light green
+    (2, 165, 86),  # green
+    (182, 182, 182),  # gray
+]
 CURRENT_PAGE_COLOR = (100, 0, 0, 255)
 SHAPES_HASH_DIVIDER = 50
 
@@ -171,11 +179,12 @@ class Board:
                 self.store(shape)
                 shape = pyglet.shapes.Circle(p2[0], p2[1], radius=width, color=(200, 0, 0), batch=self.batch)
                 self.store(shape)
-                self.active_color = (0,200,0)
+                self.active_color = (0, 200, 0)
 
             if CIRCLIZED_LINES:
                 for point in get_points_in_line(p1[0], p1[1], p2[0], p2[1]):
-                    shape = pyglet.shapes.Circle(point[0], point[1], radius=width / 2, color=self.active_color, batch=self.batch)
+                    shape = pyglet.shapes.Circle(point[0], point[1], radius=width / 2, color=self.active_color,
+                                                 batch=self.batch)
                     self.store(shape)
             else:
                 shape = pyglet.shapes.Line(p1[0], p1[1], p2[0], p2[1], width=width, color=self.active_color,
@@ -219,7 +228,7 @@ class Board:
                 pickle.dump({
                     'version': '0.1.0',
                     'pages': [list((k, [shape_to_dict(s) for s in p[k]])
-                                  for k in p.keys()) for p in self.pages]}, f)
+                                   for k in p.keys()) for p in self.pages]}, f)
 
     def load(self):
         load_dialog = file_dialog.FileOpenDialog(filetypes=[("PNB", ".pnb"), ("PenBoard", ".bnb")])

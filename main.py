@@ -1,4 +1,3 @@
-# TODO: better colors to choose from
 # TODO: PyInstaller + NSIS
 # TODO: undo + redo
 # TODO: readme
