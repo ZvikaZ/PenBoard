@@ -11,6 +11,8 @@
   OutFile "dist\PenBoard Installer.exe"
   Unicode True
 
+  BrandingText "(C) Zvika Haramaty"
+
   ;Default installation folder
   InstallDir "$PROGRAMFILES\PenBoard"
 
