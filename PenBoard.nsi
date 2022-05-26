@@ -1,7 +1,6 @@
+; clean warnings
 ; run at end
-; add to start
-; add to desktop?
-; uninstall not working
+; ask if add to desktop
 
 ;--------------------------------
 ;Include Modern UI
@@ -33,10 +32,12 @@
 ;--------------------------------
 ;Pages
 
+  !insertmacro MUI_PAGE_WELCOME			;Z ?
 ;Z  !insertmacro MUI_PAGE_LICENSE "${NSISDIR}\Docs\Modern UI\License.txt"
 ;Z  !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
+  !insertmacro MUI_PAGE_FINISH			;Z ?
 
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
@@ -54,13 +55,22 @@ Section "PenBoard" SecDummy
   SetOutPath "$INSTDIR"
 
   ;ADD YOUR OWN FILES HERE...
-  File /r "dist\PenBoard"
+  File /r "dist\PenBoard\*"
 
   ;Store installation folder
   WriteRegStr HKCU "Software\PenBoard" "" $INSTDIR
 
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
+
+;create desktop shortcut
+  CreateShortCut "$DESKTOP\PenBoard.lnk" "$INSTDIR\PenBoard.exe" ""
+
+;create start-menu items
+  CreateDirectory "$SMPROGRAMS\PenBoard"
+  CreateShortCut "$SMPROGRAMS\PenBoard\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
+  CreateShortCut "$SMPROGRAMS\PenBoard\PenBoard.lnk" "$INSTDIR\PenBoard.exe" "" "$INSTDIR\PenBoard.exe" 0
+
 
 SectionEnd
 
@@ -84,7 +94,13 @@ Section "Uninstall"
 
   Delete "$INSTDIR\Uninstall.exe"
 
-  RMDir "$INSTDIR"
+  RMDir /r "$INSTDIR"
+
+  ;Delete Desktop and Start Menu Shortcuts
+  Delete "$DESKTOP\PenBoard.lnk"
+  Delete "$SMPROGRAMS\PenBoard\*.*"
+  RmDir  "$SMPROGRAMS\PenBoard"
+
 
   DeleteRegKey /ifempty HKCU "Software\PenBoard"
 
