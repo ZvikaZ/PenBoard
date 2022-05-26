@@ -1,7 +1,6 @@
 # TODO: NSIS
 # TODO: undo + redo
 # TODO: readme
-# TODO: program icon
 
 # TODO: change brush size
 # TODO: don't change mouse cursor on menu
@@ -26,6 +25,7 @@ pyglet.resource.path = ['resources']
 pyglet.resource.reindex()
 
 window = pyglet.window.Window(1200, 900, caption="PenBoard", resizable=True)
+window.set_icon(pyglet.resource.image("icons8-quill-with-ink-48.png"))
 
 board = Board(window)
 canvas = tablet.open_tablet(window)
