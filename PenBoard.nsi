@@ -1,5 +1,3 @@
-; add to compile.bat
-
 ;--------------------------------
 ;Include Modern UI
 

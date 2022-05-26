@@ -5,3 +5,5 @@ pyinstaller.exe main.py --add-data="resources;resources" ^
     --noconfirm    ^
     --clean   ^
     --name PenBoard
+
+"C:\Program Files (x86)\NSIS\Bin\makensis.exe" PenBoard.nsi
