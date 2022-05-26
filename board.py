@@ -187,6 +187,10 @@ class Board:
                                                  batch=self.batch)
                     self.store(shape)
             else:
+                shape = pyglet.shapes.Circle(p1[0], p1[1], radius=width/2, color=self.active_color, batch=self.batch)
+                self.store(shape)
+                shape = pyglet.shapes.Circle(p2[0], p2[1], radius=width/2, color=self.active_color, batch=self.batch)
+                self.store(shape)
                 shape = pyglet.shapes.Line(p1[0], p1[1], p2[0], p2[1], width=width, color=self.active_color,
                                            batch=self.batch)
                 self.store(shape)

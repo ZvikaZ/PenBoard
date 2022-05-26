@@ -1,3 +1,4 @@
+# TODO: bug: erasing during drag
 # TODO: undo + redo
 # TODO: readme
 
