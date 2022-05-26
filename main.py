@@ -1,4 +1,3 @@
-# TODO: bug: erasing during drag
 # TODO: undo + redo
 # TODO: readme
 
@@ -9,6 +8,7 @@
 # TODO: return focus to main window after save/restore/pdf
 # TODO: improve PDF quality?
 # TODO: circlized lines - with varying pressure, don't reverse
+# TODO: highlight?
 # TODO: license? (add also to NSIS)
 
 
@@ -114,10 +114,12 @@ def on_mouse_press(x, y, button, modifiers):
                 board.paint(pen.get('pressure', 0.4), x, y, (x, y))
                 on_mouse_drag.prev_point = (x, y)
         elif combined_buttons(button) == 'erase':
+            on_mouse_drag.prev_point = None
             width = board.erase(pen.get('pressure', 0.5), x, y)
             change_mouse_cursor('eraser', window, board, width=width)
         elif combined_buttons(button) == 'select':
             ColorChooser(board, x, y)
+            on_mouse_drag.prev_point = None
 
 
 @window.event
@@ -134,6 +136,7 @@ def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
             board.paint(pen.get('pressure', 0.6), x, y, on_mouse_drag.prev_point)
         on_mouse_drag.prev_point = (x, y)
     elif combined_buttons(buttons) == 'erase':
+        on_mouse_drag.prev_point = None
         width = board.erase(pen.get('pressure', 0.5), x, y)
         change_mouse_cursor('eraser', window, board, width=width)
 
