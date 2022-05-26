@@ -1,5 +1,5 @@
 ; run at end
-; make main component mandatory
+; add to compile.bat
 
 ;--------------------------------
 ;Include Modern UI
@@ -51,6 +51,9 @@
 
 Section "PenBoard" SecMain
 
+  ; make section mandatory - no opt out
+  SectionIn RO
+
   SetOutPath "$INSTDIR"
 
   ;ADD YOUR OWN FILES HERE...
@@ -70,7 +73,7 @@ Section "PenBoard" SecMain
 
 SectionEnd
 
-Section /o "Create desktop shortcut" SecDesktop
+Section "Create desktop shortcut" SecDesktop
   ;create desktop shortcut
   CreateShortCut "$DESKTOP\PenBoard.lnk" "$INSTDIR\PenBoard.exe" ""
 SectionEnd
