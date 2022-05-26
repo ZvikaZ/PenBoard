@@ -1,6 +1,6 @@
 import pyglet
 
-HEIGHT = 680
+HEIGHT = 780
 WIDTH = 640
 MARGIN = 30
 HELP_BACKGROUND_COLOR = (1.0, 1.0, 1.0, 1.0)
@@ -16,6 +16,11 @@ PEN INSTRUCTIONS:
 - click the first pen button to erase (according to the pressure) 
 - click the second pen button to open color palette chooser
 - touch any button to operate it (as if the pen is a mouse)
+
+MOUSE BUTTONS:
+- left click to paint
+- right click to erase
+- middle click to open color palette chooser
 
 TOOLBAR: explained from left to right (with keyboard shortcuts)
 - this help screen (F1)

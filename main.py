@@ -1,6 +1,5 @@
 # TODO: undo + redo
 # TODO: readme
-# TODO: middle button
 
 # TODO: change brush size
 # TODO: don't change mouse cursor on menu
@@ -86,6 +85,8 @@ def combined_buttons(button):
             return 'click'
         elif button == pyglet.window.mouse.RIGHT:
             return 'erase'
+        elif button == pyglet.window.mouse.MIDDLE:
+            return 'select'
         else:
             return ''
     else:
