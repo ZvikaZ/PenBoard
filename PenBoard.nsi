@@ -1,6 +1,7 @@
-;NSIS Modern User Interface
-;Basic Example Script
-;Written by Joost Verburg
+; run at end
+; add to start
+; add to desktop?
+; uninstall not working
 
 ;--------------------------------
 ;Include Modern UI
@@ -11,29 +12,29 @@
 ;General
 
   ;Name and file
-  Name "Modern UI Test"
-  OutFile "Basic.exe"
+  Name "PenBoard"
+  OutFile "dist\PenBoard Installer.exe"
   Unicode True
 
   ;Default installation folder
-  InstallDir "$LOCALAPPDATA\Modern UI Test"
+  InstallDir "$PROGRAMFILES\PenBoard"
 
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\Modern UI Test" ""
+  InstallDirRegKey HKCU "Software\PenBoard" ""
 
   ;Request application privileges for Windows Vista
-  RequestExecutionLevel user
+  RequestExecutionLevel admin  ;Z user
 
 ;--------------------------------
 ;Interface Settings
 
-  !define MUI_ABORTWARNING
+  !define MUI_ABORTWARNING      ;Z what's this?
 
 ;--------------------------------
 ;Pages
 
-  !insertmacro MUI_PAGE_LICENSE "${NSISDIR}\Docs\Modern UI\License.txt"
-  !insertmacro MUI_PAGE_COMPONENTS
+;Z  !insertmacro MUI_PAGE_LICENSE "${NSISDIR}\Docs\Modern UI\License.txt"
+;Z  !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
 
@@ -48,14 +49,15 @@
 ;--------------------------------
 ;Installer Sections
 
-Section "Dummy Section" SecDummy
+Section "PenBoard" SecDummy
 
   SetOutPath "$INSTDIR"
 
   ;ADD YOUR OWN FILES HERE...
+  File /r "dist\PenBoard"
 
   ;Store installation folder
-  WriteRegStr HKCU "Software\Modern UI Test" "" $INSTDIR
+  WriteRegStr HKCU "Software\PenBoard" "" $INSTDIR
 
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
@@ -84,6 +86,6 @@ Section "Uninstall"
 
   RMDir "$INSTDIR"
 
-  DeleteRegKey /ifempty HKCU "Software\Modern UI Test"
+  DeleteRegKey /ifempty HKCU "Software\PenBoard"
 
 SectionEnd
