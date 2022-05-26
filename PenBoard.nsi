@@ -1,4 +1,3 @@
-; run at end
 ; add to compile.bat
 
 ;--------------------------------
@@ -26,7 +25,12 @@
 ;--------------------------------
 ;Interface Settings
 
-  !define MUI_ABORTWARNING      ;Z what's this?
+  !define MUI_ABORTWARNING
+
+
+  ; run at end
+  !define MUI_FINISHPAGE_RUN "$INSTDIR\PenBoard.exe"
+
 
 ;--------------------------------
 ;Pages
@@ -36,7 +40,7 @@
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
-  !insertmacro MUI_PAGE_FINISH			;Z ?
+  !insertmacro MUI_PAGE_FINISH
 
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
